@@ -6,10 +6,13 @@ n = 10
 
 if sys.argv[1] == "1":
     for scriptInstance in range(1):
-        sys.stdout=open('results.txt','w')
-        for i in range(n):
-            subprocess.check_call(['python','algoritmo.py'], \
-                stdout=sys.stdout, stderr=subprocess.STDOUT)
+        with open('results.txt', 'w') as f:
+            for i in range(n):
+                subprocess.check_call(
+                    ['python', 'algoritmo.py'],
+                    stdout=f,
+                    stderr=subprocess.STDOUT
+                )
     # for scriptInstance in range(1):
     #     sys.stdout=open('med.txt','w')
     #     for i in range(n):
