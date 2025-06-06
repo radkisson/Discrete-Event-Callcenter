@@ -131,4 +131,3 @@ def run_simulation(
 if __name__ == "__main__":
     for value in run_simulation():
         print(value)
-
