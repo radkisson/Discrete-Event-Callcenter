@@ -4,13 +4,10 @@
 - Variable names are in euskera, I know, it's hard to read.
 - Simulated ussing both Poisson and Exponential distributions
 
-## Installation
+## Requirements
 
-Install the required dependencies using `pip`:
-
-```bash
-pip install -r requirements.txt
-```
+* Python 3.8 or higher
+* Install the dependencies with `pip install -r requirements.txt`
 
 ## Usage
 
