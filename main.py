@@ -4,6 +4,13 @@ import stats
 
 
 def main():
+    """Entry point for the command line interface.
+
+    Run ``python main.py --simulate`` to execute the simulation and store the
+    raw metrics in ``results.txt``.  Use ``python main.py --stats`` to read the
+    file and display aggregated statistics for the low, medium and high demand
+    scenarios.
+    """
     parser = argparse.ArgumentParser(description="Discrete call-center simulation")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--simulate", action="store_true", help="Run the simulation")

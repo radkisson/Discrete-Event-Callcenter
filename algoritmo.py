@@ -8,7 +8,20 @@ from filter import first_level, second_level, sort_by_work_time
 
 
 def _sl(calls: Sequence, *, threshold: int = 5) -> float:
-    """Return service level for the provided call list."""
+    """Return service level for ``calls``.
+
+    Parameters
+    ----------
+    calls : Sequence
+        Iterable of call objects implementing ``wait_time``.
+    threshold : int, optional
+        Maximum waiting time considered acceptable. Defaults to ``5`` minutes.
+
+    Returns
+    -------
+    float
+        Fraction of calls answered before ``threshold`` minutes.
+    """
 
     count = 0
     for c in calls:
@@ -18,7 +31,20 @@ def _sl(calls: Sequence, *, threshold: int = 5) -> float:
 
 
 def _asa(calls: Sequence, sla: Sequence[float]) -> float:
-    """Return share of calls solved within the SLA."""
+    """Return share of ``calls`` solved within their SLA.
+
+    Parameters
+    ----------
+    calls : Sequence
+        Iterable of call objects.
+    sla : Sequence[float]
+        SLA thresholds for each department.
+
+    Returns
+    -------
+    float
+        Ratio of calls completed before exceeding their SLA.
+    """
 
     count = 0
     for c in calls:
@@ -29,7 +55,18 @@ def _asa(calls: Sequence, sla: Sequence[float]) -> float:
 
 
 def _p_wait_queue(calls: Sequence) -> float:
-    """Return fraction of calls that had to wait in queue."""
+    """Return fraction of ``calls`` that had to wait in queue.
+
+    Parameters
+    ----------
+    calls : Sequence
+        Iterable of call objects.
+
+    Returns
+    -------
+    float
+        Proportion of calls with non-zero waiting time.
+    """
 
     count = 0
     for c in calls:
@@ -39,7 +76,18 @@ def _p_wait_queue(calls: Sequence) -> float:
 
 
 def _average_work_time(workers: Sequence) -> float:
-    """Return average worker utilisation."""
+    """Return average worker utilisation.
+
+    Parameters
+    ----------
+    workers : Sequence
+        Iterable of worker objects implementing ``work_time``.
+
+    Returns
+    -------
+    float
+        Ratio of minutes spent on calls relative to an 8 hour shift.
+    """
 
     total_work = 0
     for w in workers:
@@ -54,11 +102,28 @@ def run_simulation(
 ) -> Tuple[int, int, int, float, float, float, float]:
     """Run the call center simulation.
 
-    If ``calls`` or ``workers`` are not provided, fresh ones are created by
-    reloading the corresponding modules which also regenerates the random input
-    data.  The function returns a tuple with the following metrics::
+    Parameters
+    ----------
+    calls : Iterable, optional
+        Sequence of :class:`call.Call` objects.  When ``None`` a new dataset is
+        generated.
+    workers : Iterable, optional
+        Sequence of :class:`worker.WorkerType` instances.  When ``None`` new
+        workers are built using the generated skill matrices.
+    sla : Sequence[float], optional
+        SLA thresholds for each department.
 
-        (professionals, helpers, waiting, SL, ASA, p_wait, work_time)
+    Returns
+    -------
+    tuple
+        ``(professionals, helpers, waiting, SL, ASA, p_wait, work_time)`` where
+        each value corresponds to one of the metrics computed during the
+        simulation.
+
+    Notes
+    -----
+    When ``calls`` or ``workers`` are omitted the required modules are
+    reloaded so that every run uses fresh random input data.
     """
 
     if calls is None or workers is None or sla is None:

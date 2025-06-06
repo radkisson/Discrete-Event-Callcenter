@@ -4,6 +4,20 @@ from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
 # Define the worker objects
 
 class WorkerType:
+    """Model a call-centre agent and their skill set.
+
+    Parameters
+    ----------
+    department : int
+        Department identifier this worker belongs to.
+    number : int
+        Unique number for the worker inside the department.
+    sales, logistics, programming, maintenance : int
+        Skill levels for the four departments.  ``8`` represents a specialist
+        while lower values denote diminishing ability.
+    sla : float
+        Service level agreement for this worker's main department.
+    """
 
     def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
         # Basic worker data
