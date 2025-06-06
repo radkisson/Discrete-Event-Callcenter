@@ -1,3 +1,5 @@
+"""Collections of predefined worker skill arrays used for experiments."""
+
 import numpy as np
 
 # Example skill arrays used during experimentation

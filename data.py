@@ -7,7 +7,8 @@ distributions so that each run produces a slightly different workload.  The
 output consists of a matrix of incoming calls (:data:`call_input_list`) as well
 as several worker skill matrices (:data:`A`, :data:`B`, :data:`C`).  These
 variables are imported by :mod:`call` and :mod:`worker` when building their
-respective objects.
+respective objects.  Constants defined here are treated as the default inputs
+for the simulation engine.
 """
 
 import numpy as np

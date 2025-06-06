@@ -1,4 +1,10 @@
-"""Discrete call center simulation engine."""
+"""Core logic for simulating a discrete-event call centre.
+
+This module contains helper functions to compute key metrics and the
+``run_simulation`` function which orchestrates the event loop.  Only the
+Python standard library and NumPy are used so that the scheduling
+mechanics remain easy to follow.
+"""
 
 from __future__ import annotations
 
@@ -100,7 +106,7 @@ def run_simulation(
     workers: Optional[Iterable] = None,
     sla: Optional[Sequence[float]] = None,
 ) -> Tuple[int, int, int, float, float, float, float]:
-    """Run the call center simulation.
+    """Run the call center simulation and return summary metrics.
 
     Parameters
     ----------

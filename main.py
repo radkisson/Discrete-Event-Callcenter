@@ -1,3 +1,5 @@
+"""Command line interface for running simulations and displaying statistics."""
+
 import argparse
 import os
 
