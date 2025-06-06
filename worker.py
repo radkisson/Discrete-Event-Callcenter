@@ -1,3 +1,5 @@
+"""Worker classes and builders used by the simulation engine."""
+
 import itertools  # Helper for constructing the worker matrices
 from data import A, B, C, tSLA, team_size as default_team_size
 

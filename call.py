@@ -1,3 +1,5 @@
+"""Wrappers for incoming call data used by the simulator."""
+
 from data import call_input_list
 
 class Call:
@@ -13,6 +15,19 @@ class Call:
         Identifier of the department that should serve the call.
     sla : float
         Service Level Agreement (maximum waiting time allowed).
+
+    Attributes
+    ----------
+    time : float
+        When the call arrived to the system.
+    duration : float
+        Estimated handling time for the call.
+    department : int
+        Department responsible for serving the call.
+    sla : float
+        SLA value for the department.
+    handle_time : float
+        When the call was actually answered. Set by the simulator.
     """
 
     def __init__(self, time, duration, department, sla):

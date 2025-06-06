@@ -1,6 +1,12 @@
 # Helper functions to select specialized and helper agents
 
-"""Utility helpers for filtering and ordering worker lists."""
+"""Utility helpers for filtering and ordering worker lists.
+
+The functions in this module act on sequences of workers and are used by
+the simulation engine to select the best agent for a given call.  Only two
+basic pieces of information are required from a worker: its skill level for
+a department and the amount of work already assigned.
+"""
 
 from typing import List, Protocol
 
