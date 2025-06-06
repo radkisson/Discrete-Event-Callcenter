@@ -58,98 +58,44 @@ class WorkerType:
         if number == 4:
             return self.maintenance
 
-dept = 0
-workers = []  # Initial empty list of workers
-for i in team_size:  # Build the first worker list
-    for j in range(i):
-        workers.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers[-1].sla = tSLA[dept]
-    dept = dept + 1
 
-for i in range(len(workers)):
-    workers[i].sales = 2
-    workers[i].logistics = 2
-    workers[i].programming = 2
-    workers[i].maintenance = 2
+def build_worker_list(skill_matrix):
+    """Return a list of :class:`WorkerType` objects built from ``skill_matrix``."""
 
-for i in range(len(workers)):
-    if A[i,0] == 1:
-        workers[i].sales = 8
-    if A[i,0] == 2:
-        workers[i].logistics = 8
-    if A[i,0] == 3:
-        workers[i].programming = 8
-    if A[i,0] == 4:
-        workers[i].maintenance = 8
-    if A[i,1] == 1:
-        workers[i].sales = 5
-    if A[i,1] == 2:
-        workers[i].logistics = 5
-    if A[i,1] == 3:
-        workers[i].programming = 5
-    if A[i,1] == 4:
-        workers[i].maintenance = 5
+    # Create workers for each department according to ``team_size``
+    workers: list[WorkerType] = []
+    dept = 0
+    for size in team_size:
+        for number in range(size):
+            worker = WorkerType(dept, number, 2, 2, 2, 2, 0)
+            worker.sla = tSLA[dept]
+            workers.append(worker)
+        dept += 1
 
-dept = 0
-workers2 = []  # Second worker matrix
-for i in team_size:  # Build the second worker list
-    for j in range(i):
-        workers2.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers2[-1].sla = tSLA[dept]
-    dept = dept + 1
+    # Assign skills using the provided matrix
+    for idx, worker in enumerate(workers):
+        if skill_matrix[idx, 0] == 1:
+            worker.sales = 8
+        if skill_matrix[idx, 0] == 2:
+            worker.logistics = 8
+        if skill_matrix[idx, 0] == 3:
+            worker.programming = 8
+        if skill_matrix[idx, 0] == 4:
+            worker.maintenance = 8
 
-for i in range(len(workers2)):
-    workers2[i].sales = 2
-    workers2[i].logistics = 2
-    workers2[i].programming = 2
-    workers2[i].maintenance = 2
+        if skill_matrix[idx, 1] == 1:
+            worker.sales = 5
+        if skill_matrix[idx, 1] == 2:
+            worker.logistics = 5
+        if skill_matrix[idx, 1] == 3:
+            worker.programming = 5
+        if skill_matrix[idx, 1] == 4:
+            worker.maintenance = 5
 
-for i in range(len(workers2)):
-    if B[i,0] == 1:
-        workers2[i].sales = 8
-    if B[i,0] == 2:
-        workers2[i].logistics = 8
-    if B[i,0] == 3:
-        workers2[i].programming = 8
-    if B[i,0] == 4:
-        workers2[i].maintenance = 8
-    if B[i,1] == 1:
-        workers2[i].sales = 5
-    if B[i,1] == 2:
-        workers2[i].logistics = 5
-    if B[i,1] == 3:
-        workers2[i].programming = 5
-    if B[i,1] == 4:
-        workers2[i].maintenance = 5
-    
-dept = 0
-workers3 = []  # Third worker matrix
-for i in team_size:  # Build the third worker list
-    for j in range(i):
-        workers3.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers3[-1].sla = tSLA[dept]
-    dept = dept + 1
+    return workers
 
-for i in range(len(workers3)):
-    workers3[i].sales = 2
-    workers3[i].logistics = 2
-    workers3[i].programming = 2
-    workers3[i].maintenance = 2
 
-for i in range(len(workers3)):
-    if C[i,0] == 1:
-        workers3[i].sales = 8
-    if C[i,0] == 2:
-        workers3[i].logistics = 8
-    if C[i,0] == 3:
-        workers3[i].programming = 8
-    if C[i,0] == 4:
-        workers3[i].maintenance = 8
-    if C[i,1] == 1:
-        workers3[i].sales = 5
-    if C[i,1] == 2:
-        workers3[i].logistics = 5
-    if C[i,1] == 3:
-        workers3[i].programming = 5
-    if C[i,1] == 4:
-        workers3[i].maintenance = 5
+# Worker matrices used during the simulation
+workers = build_worker_list(A)
+workers2 = build_worker_list(B)
+workers3 = build_worker_list(C)
