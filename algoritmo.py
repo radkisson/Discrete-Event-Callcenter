@@ -1,16 +1,6 @@
 from call import calls
-from filter import (
-    first_level,
-    second_level,
-    sort_by_work_time,
-    first_level2,
-    second_level2,
-    sort_by_work_time2,
-    first_level3,
-    second_level3,
-    sort_by_work_time3,
-)
-from worker import workers, workers2, workers3
+from filter import first_level, second_level, sort_by_work_time
+from worker import workers
 from data import tSLA, team_size  # Imported data
 
 professionals = 0
@@ -20,9 +10,9 @@ waiting = 0  # Counters to track call handling statistics
 for k in range(len(calls)):
     call_item = calls[k]
     call_type = call_item.department + 1  # departments are 1-indexed
-    primary_workers = first_level(call_type)  # specialized agents
+    primary_workers = first_level(workers, call_type)  # specialized agents
     primary_workers = sort_by_work_time(primary_workers)
-    secondary_workers = second_level(call_type)  # helper agents
+    secondary_workers = second_level(workers, call_type)  # helper agents
     secondary_workers = sort_by_work_time(secondary_workers)
     attended = 0
     for i in range(len(primary_workers)):
