@@ -26,6 +26,11 @@ def main():
         action="store_true",
         help="Load worker counts from environment variables",
     )
+    parser.add_argument(
+        "--env-file",
+        default=".env",
+        help="Path to environment file used with --workers-from-env",
+    )
     args = parser.parse_args()
 
     n = 10
@@ -33,17 +38,23 @@ def main():
     if args.simulate:
         custom_workers = None
         if args.workers_from_env:
-            load_dotenv(dotenv_path=os.path.join(os.getcwd(), '.env'))
+            load_dotenv(dotenv_path=os.path.join(os.getcwd(), args.env_file))
             team_size = [
                 int(os.getenv("SALES_WORKERS", 0)),
                 int(os.getenv("LOGISTICS_WORKERS", 0)),
                 int(os.getenv("PROGRAMMING_WORKERS", 0)),
                 int(os.getenv("MAINTENANCE_WORKERS", 0)),
             ]
+            quality = [
+                int(os.getenv("SALES_QUALITY", 8)),
+                int(os.getenv("LOGISTICS_QUALITY", 8)),
+                int(os.getenv("PROGRAMMING_QUALITY", 8)),
+                int(os.getenv("MAINTENANCE_QUALITY", 8)),
+            ]
             from worker import build_worker_list
             import data
 
-            custom_workers = build_worker_list(data.A, team_size)
+            custom_workers = build_worker_list(data.A, team_size, quality)
 
         with open("results.txt", "w") as f:
             for _ in range(n):

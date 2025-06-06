@@ -20,7 +20,8 @@ Variable names originate from an earlier prototype that used Euskera terms. They
 
 * Python 3.8 or higher
 * Install the dependencies with `pip install -r requirements.txt`
-* Optional: set worker counts in a `.env` file when using `--workers-from-env`
+* Optional: set worker counts and quality in a `.env` file when using `--workers-from-env`
+  (use `--env-file PATH` to load a different file)
 
 ## Running the Simulation
 
@@ -38,12 +39,24 @@ To read worker counts from environment variables defined in a `.env` file use:
 python main.py --simulate --workers-from-env
 ```
 
+To load settings from a different file pass the path using `--env-file`:
+
+```bash
+python main.py --simulate --workers-from-env --env-file custom.env
+```
+
 The following variables are recognised:
 
 * `SALES_WORKERS`
+* `SALES_QUALITY`
 * `LOGISTICS_WORKERS`
+* `LOGISTICS_QUALITY`
 * `PROGRAMMING_WORKERS`
+* `PROGRAMMING_QUALITY`
 * `MAINTENANCE_WORKERS`
+* `MAINTENANCE_QUALITY`
+
+An example configuration is provided in [`.env.example`](./.env.example).
 
 ## Analysing Results
 
