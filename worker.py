@@ -1,5 +1,5 @@
 import itertools  # Helper for constructing the worker matrices
-from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
+from data import A, B, C, tSLA, team_size as default_team_size
 
 # Define the worker objects
 
@@ -79,8 +79,11 @@ class WorkerType:
             return self.maintenance
 
 
-def build_worker_list(skill_matrix):
-    """Return a list of :class:`WorkerType` objects built from ``skill_matrix``."""
+def build_worker_list(skill_matrix, team_size):
+    """Return a list of :class:`WorkerType` objects built from ``skill_matrix``.
+
+    ``team_size`` specifies the number of workers per department.
+    """
 
     # Create workers for each department according to ``team_size``
     workers: list[WorkerType] = []
@@ -116,6 +119,6 @@ def build_worker_list(skill_matrix):
 
 
 # Worker matrices used during the simulation
-workers = build_worker_list(A)
-workers2 = build_worker_list(B)
-workers3 = build_worker_list(C)
+workers = build_worker_list(A, default_team_size)
+workers2 = build_worker_list(B, default_team_size)
+workers3 = build_worker_list(C, default_team_size)

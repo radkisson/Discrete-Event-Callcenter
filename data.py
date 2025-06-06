@@ -84,15 +84,31 @@ minutes_per_dept = department_ratio * total_work_minutes  # Minutes assigned to 
 average_call_time = [minutes_per_dept[i] * pow(max_calls[i], -1) for i in range(4)]  # Average handling time per call
 arrival_rate = incoming_calls / total_minutes  # Arrival rate per minute
 
-arrivals = np.array([rnd.exponential(1 / arrival_rate[i], incoming_calls[i]) for i in range(4)])  # Call arrival times
-arrival_times = np.array([np.array([arrivals[j][0:i].sum() for i in range(max_calls[j])]) for j in range(4)])  # Cumulated arrival times
-call_durations = np.array([rnd.exponential(average_call_time[i], incoming_calls[i]) for i in range(4)])  # Call durations
-call_durations_cum  = np.array([ np.array([call_durations[j][0:i].sum() for i in range(max_calls[j])]) for j in range(4)])
+arrivals = np.array([
+    rnd.exponential(1 / arrival_rate[i], incoming_calls[i]) for i in range(4)
+], dtype=object)  # Call arrival times
+arrival_times = np.array([
+    np.array([arrivals[j][0:i].sum() for i in range(max_calls[j])])
+    for j in range(4)
+], dtype=object)  # Cumulated arrival times
+call_durations = np.array([
+    rnd.exponential(average_call_time[i], incoming_calls[i]) for i in range(4)
+], dtype=object)  # Call durations
+call_durations_cum = np.array([
+    np.array([call_durations[j][0:i].sum() for i in range(max_calls[j])])
+    for j in range(4)
+], dtype=object)
 
 # Matrix of incoming calls per department (time, duration, type, SLA)
 
-all_calls  = np.array(
-    [np.array([ np.array([arrival_times[i][j],call_durations[i][j],i,tSLA[i]]) for j in range(incoming_calls[i])]) for i in range(4)]
+all_calls = np.array(
+    [
+        np.array(
+            [np.array([arrival_times[i][j], call_durations[i][j], i, tSLA[i]]) for j in range(incoming_calls[i])]
+        )
+        for i in range(4)
+    ],
+    dtype=object,
 )
 
 # Proportion of calls that will miss the SLA even if answered immediately
