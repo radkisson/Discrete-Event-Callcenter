@@ -19,6 +19,8 @@ Run the simulation and write the results file:
 ```bash
 python main.py --simulate
 ```
+Running the command above will generate a new `results.txt` file (overwriting
+any existing one).
 
 Generate statistics from an existing `results.txt` file:
 
