@@ -14,7 +14,7 @@ class WorkerType:
         self.logistics = logistics
         self.programming = programming
         self.maintenance = maintenance
-        self.sla = 0  # SLA for the department
+        self.sla = sla  # SLA for the department
         self.tracer = "Kaixo"
     
     def __repr__(self):
