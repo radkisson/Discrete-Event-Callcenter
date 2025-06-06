@@ -1,4 +1,8 @@
 import argparse
+import os
+
+from dotenv import load_dotenv
+
 import algoritmo
 import stats
 
@@ -15,14 +19,33 @@ def main():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--simulate", action="store_true", help="Run the simulation")
     mode.add_argument("--stats", action="store_true", help="Show statistics")
+    parser.add_argument(
+        "--workers-from-env",
+        action="store_true",
+        help="Load worker counts from environment variables",
+    )
     args = parser.parse_args()
 
     n = 10
 
     if args.simulate:
+        custom_workers = None
+        if args.workers_from_env:
+            load_dotenv(dotenv_path=os.path.join(os.getcwd(), '.env'))
+            team_size = [
+                int(os.getenv("SALES_WORKERS", 0)),
+                int(os.getenv("LOGISTICS_WORKERS", 0)),
+                int(os.getenv("PROGRAMMING_WORKERS", 0)),
+                int(os.getenv("MAINTENANCE_WORKERS", 0)),
+            ]
+            from worker import build_worker_list
+            import data
+
+            custom_workers = build_worker_list(data.A, team_size)
+
         with open("results.txt", "w") as f:
             for _ in range(n):
-                result = algoritmo.run_simulation()
+                result = algoritmo.run_simulation(workers=custom_workers)
                 for value in result:
                     f.write(f"{value}\n")
 

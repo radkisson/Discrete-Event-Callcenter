@@ -20,6 +20,7 @@ Variable names originate from an earlier prototype that used Euskera terms. They
 
 * Python 3.8 or higher
 * Install the dependencies with `pip install -r requirements.txt`
+* Optional: set worker counts in a `.env` file when using `--workers-from-env`
 
 ## Running the Simulation
 
@@ -30,6 +31,19 @@ python main.py --simulate
 ```
 
 The command above overwrites any existing `results.txt` in the working directory.
+
+To read worker counts from environment variables defined in a `.env` file use:
+
+```bash
+python main.py --simulate --workers-from-env
+```
+
+The following variables are recognised:
+
+* `SALES_WORKERS`
+* `LOGISTICS_WORKERS`
+* `PROGRAMMING_WORKERS`
+* `MAINTENANCE_WORKERS`
 
 ## Analysing Results
 
