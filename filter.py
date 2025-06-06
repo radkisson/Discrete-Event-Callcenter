@@ -12,12 +12,39 @@ class WorkerProtocol(Protocol):
 
 
 def workers_by_skill(worker_list: List[WorkerProtocol], number: int) -> List[WorkerProtocol]:
-    """Return workers sorted by skill for the given department."""
+    """Return ``worker_list`` ordered by skill for ``number``.
+
+    Parameters
+    ----------
+    worker_list : List[WorkerProtocol]
+        Sequence of workers to sort.
+    number : int
+        Department identifier to look the skill up for.
+
+    Returns
+    -------
+    List[WorkerProtocol]
+        New list sorted from highest to lowest skill level.
+    """
     return sorted(worker_list, key=lambda x: x.skill_for(number), reverse=True)
 
 
 def first_level(worker_list: List[WorkerProtocol], department: int) -> List[WorkerProtocol]:
-    """Return specialized agents for a given call type."""
+    """Return specialists for ``department``.
+
+    Parameters
+    ----------
+    worker_list : List[WorkerProtocol]
+        Workers to filter.
+    department : int
+        Department number using one-based indexing.
+
+    Returns
+    -------
+    List[WorkerProtocol]
+        Only those workers whose skill is ``8`` for the requested department,
+        sorted from most to least busy.
+    """
     ordered = workers_by_skill(worker_list, department)
     ordered.reverse()
     length = len(ordered)
@@ -32,7 +59,21 @@ def first_level(worker_list: List[WorkerProtocol], department: int) -> List[Work
 
 
 def second_level(worker_list: List[WorkerProtocol], department: int) -> List[WorkerProtocol]:
-    """Return helper agents for a given call type."""
+    """Return helper agents for ``department``.
+
+    Parameters
+    ----------
+    worker_list : List[WorkerProtocol]
+        Worker population to search.
+    department : int
+        Department identifier using one-based indexing.
+
+    Returns
+    -------
+    List[WorkerProtocol]
+        Workers with intermediate skill (between 5 and 7) for the given
+        department sorted from most to least busy.
+    """
     ordered = workers_by_skill(worker_list, department)
     count = 0
     for i in range(len(ordered)):
@@ -50,7 +91,18 @@ def second_level(worker_list: List[WorkerProtocol], department: int) -> List[Wor
 
 
 def sort_by_work_time(worker_list: List[WorkerProtocol]) -> List[WorkerProtocol]:
-    """Return workers sorted by amount of work done."""
+    """Return ``worker_list`` ordered by current workload.
+
+    Parameters
+    ----------
+    worker_list : List[WorkerProtocol]
+        Workers to sort by utilisation.
+
+    Returns
+    -------
+    List[WorkerProtocol]
+        New list sorted from least to most busy.
+    """
     ordered = sorted(worker_list, key=lambda x: x.work_time(), reverse=True)
     ordered.reverse()
     return ordered

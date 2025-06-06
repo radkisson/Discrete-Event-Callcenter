@@ -1,4 +1,15 @@
 
+"""Generate the random input matrices used by the simulator.
+
+This module constructs the synthetic call-arrival and worker-skill data used
+throughout the project.  NumPy is employed to draw samples from exponential
+distributions so that each run produces a slightly different workload.  The
+output consists of a matrix of incoming calls (:data:`call_input_list`) as well
+as several worker skill matrices (:data:`A`, :data:`B`, :data:`C`).  These
+variables are imported by :mod:`call` and :mod:`worker` when building their
+respective objects.
+"""
+
 import numpy as np
 import numpy.random as rnd  # used to generate random numbers
 import helpers

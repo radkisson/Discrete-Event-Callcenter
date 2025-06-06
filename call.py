@@ -1,7 +1,19 @@
 from data import call_input_list
 
 class Call:
-    """Simple representation of an incoming call."""
+    """Representation of a single call arriving to the centre.
+
+    Parameters
+    ----------
+    time : float
+        Minute when the call enters the system.
+    duration : float
+        Expected handling time in minutes.
+    department : int
+        Identifier of the department that should serve the call.
+    sla : float
+        Service Level Agreement (maximum waiting time allowed).
+    """
 
     def __init__(self, time, duration, department, sla):
         # minute when the call arrives
@@ -16,11 +28,23 @@ class Call:
         self.handle_time = 0
 
     def wait_time(self):
-        """Return the time this call waited in queue."""
+        """Return the time this call waited in queue.
+
+        Returns
+        -------
+        float
+            Minutes between arrival and being handled.
+        """
         return self.handle_time - self.time
 
     def delta_t(self):
-        """Return the waiting time before this call was handled."""
+        """Return the waiting time before this call was handled.
+
+        Returns
+        -------
+        float
+            Alias for :meth:`wait_time` used by legacy code.
+        """
         return self.wait_time()
 
 # Build the list of calls using the generated input matrix
