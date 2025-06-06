@@ -1,7 +1,6 @@
 
 import numpy as np
 import numpy.random as rnd  # used to generate random numbers
-import helpers
 
 # Example matrices of worker skills
 

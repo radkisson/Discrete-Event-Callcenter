@@ -1,4 +1,3 @@
-import itertools  # Helper for constructing the worker matrices
 from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
 
 # Define the worker objects
