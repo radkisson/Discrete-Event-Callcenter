@@ -31,6 +31,22 @@ python main.py --simulate
 
 The command above overwrites any existing `results.txt` in the working directory.
 
+### Loading worker counts from environment variables
+
+You can override the number of workers per department by supplying the
+`--workers-from-env` flag together with a `WORKER_COUNTS` variable in a
+`.env` file. The value is a comma separated list of integers. For example:
+
+```bash
+echo "WORKER_COUNTS=5,3,4,3" > .env
+python main.py --simulate --workers-from-env
+```
+
+A sample `.env.example` file is included in the repository. Copy it to `.env`
+and adjust the numbers to match your scenario.
+
+This mechanism allows specifying between one and four worker categories.
+
 ## Analysing Results
 
 Once a `results.txt` file is available you can compute summary statistics:
@@ -40,6 +56,23 @@ python main.py --stats
 ```
 
 This command prints aggregated metrics for low, medium and high demand scenarios. The repository ships with a minimal `results.txt` so that the automated tests run successfully.
+
+## Using the Modules
+
+The simulation logic lives in `algoritmo.py` and can be reused from your own
+scripts. For example:
+
+```python
+from algoritmo import run_simulation
+from call import calls
+from worker import workers
+
+metrics = run_simulation(calls, workers)
+print(metrics)
+```
+
+Each invocation returns a tuple with the number of professionals and helpers,
+the count of queued calls and several service metrics.
 
 ## Testing
 
