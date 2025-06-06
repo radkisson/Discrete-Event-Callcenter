@@ -1,3 +1,10 @@
+"""Example arrays with experimental worker skill configurations.
+
+These constants capture different skill distributions that were explored
+during early prototypes. They remain in the repository as reference data
+but are not used by the simulation.
+"""
+
 import numpy as np
 
 # Example skill arrays used during experimentation
