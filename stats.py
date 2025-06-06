@@ -1,218 +1,57 @@
-def low(n):
-    with open('results.txt', 'r') as f:
-        count = 0
-        professionals = 0
-        for line in f:
-            if count % 21 == 0: #this is the remainder operator
-                line = line.strip('\n')
-                professionals = professionals + float(line)
-            count+=1
-        professionals = professionals / n
+"""Utilities for computing statistics from simulation results."""
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        L = 0
-        for line in f:
-            if count % 21 == 1: #this is the remainder operator
-                line = line.strip('\n')
-                L = L + float(line)
-            count+=1
-        helpers = L / n
+from typing import Iterable, List, Sequence
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        waiting = 0
-        for line in f:
-            if count % 21 == 2:  # this is the remainder operator
-                line = line.strip('\n')
-                waiting = waiting + float(line)
-            count+=1
-        waiting = waiting / n
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        SL = 0
-        for line in f:
-            if count % 21 == 3: #this is the remainder operator
-                line = line.strip('\n')
-                SL = SL + float(line)
-            count+=1
-        SL = SL/n
+def load_results(filename: str = "results.txt") -> List[float]:
+    """Return all numeric values stored in ``filename``.
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        ASA = 0
-        for line in f:
-            if count % 21 == 4: #this is the remainder operator
-                line = line.strip('\n')
-                ASA = ASA + float(line)
-            count+=1
-        ASA = ASA/n
+    Each line of the file must contain a single number. Blank lines are ignored.
+    """
+    with open(filename, "r") as fh:
+        return [float(line.strip()) for line in fh if line.strip()]
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        wait = 0
-        for line in f:
-            if count % 21 == 5: #this is the remainder operator
-                line = line.strip('\n')
-                wait = wait + float(line)
-            count+=1
-        wait = wait/n
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        work_done = 0
-        for line in f:
-            if count % 21 == 6: #this is the remainder operator
-                line = line.strip('\n')
-                work_done = work_done + float(line)
-            count+=1
-        work_done = work_done/n
-    
-    return professionals, helpers, waiting, SL, ASA, wait, work_done
+def _compute_stats(data: Sequence[float], offset: int) -> tuple:
+    """Compute aggregated statistics starting at ``offset``.
 
-def med(n):
-    with open('results.txt', 'r') as f:
-        count = 0
-        professionals = 0
-        for line in f:
-            if count % 21 == 7: #this is the remainder operator
-                line = line.strip('\n')
-                professionals = professionals + float(line)
-            count+=1
-        professionals = professionals/n
+    ``data`` must contain groups of 21 consecutive numbers. Each group
+    represents results for the low, medium and high scenarios in that order.
+    ``offset`` should be 0 for low, 7 for medium and 14 for high.
+    """
+    if len(data) % 21 != 0:
+        raise ValueError("Results data length must be a multiple of 21")
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        L = 0
-        for line in f:
-            if count % 21 == 8: #this is the remainder operator
-                line = line.strip('\n')
-                L = L + float(line)
-            count+=1
-        helpers = L/n
+    runs = len(data) // 21
+    metrics = [0.0] * 7
+    for run in range(runs):
+        base = run * 21 + offset
+        for i in range(7):
+            metrics[i] += data[base + i]
+    return tuple(value / runs for value in metrics)
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        waiting = 0
-        for line in f:
-            if count % 21 == 9: #this is the remainder operator
-                line = line.strip('\n')
-                waiting = waiting + float(line)
-            count+=1
-        waiting = waiting/n
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        SL = 0
-        for line in f:
-            if count % 21 == 10: #this is the remainder operator
-                line = line.strip('\n')
-                SL = SL + float(line)
-            count+=1
-        SL = SL/n
+def low(n: int | None = None, data: Iterable[float] | None = None) -> tuple:
+    """Return average statistics for the low scenario.
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        ASA = 0
-        for line in f:
-            if count % 21 == 11: #this is the remainder operator
-                line = line.strip('\n')
-                ASA = ASA + float(line)
-            count+=1
-        ASA = ASA/n
+    ``n`` is ignored and kept for backwards compatibility.  ``data`` may be
+    provided to avoid reloading the file multiple times.
+    """
+    if data is None:
+        data = load_results()
+    return _compute_stats(list(data), 0)
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        wait = 0
-        for line in f:
-            if count % 21 == 12: #this is the remainder operator
-                line = line.strip('\n')
-                wait = wait + float(line)
-            count+=1
-        wait = wait/n
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        work_done = 0
-        for line in f:
-            if count % 21 == 13: #this is the remainder operator
-                line = line.strip('\n')
-                work_done = work_done + float(line)
-            count+=1
-        work_done = work_done/n
-    
-    return professionals, helpers, waiting, SL, ASA, wait, work_done
+def med(n: int | None = None, data: Iterable[float] | None = None) -> tuple:
+    """Return average statistics for the medium scenario."""
+    if data is None:
+        data = load_results()
+    return _compute_stats(list(data), 7)
 
-def hi(n):
-    with open('results.txt', 'r') as f:
-        count = 0
-        professionals = 0
-        for line in f:
-            if count % 21 == 14: #this is the remainder operator
-                line = line.strip('\n')
-                professionals = professionals + float(line)
-            count+=1
-        professionals = professionals/n
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        L = 0
-        for line in f:
-            if count % 21 == 15: #this is the remainder operator
-                line = line.strip('\n')
-                L = L + float(line)
-            count+=1
-        helpers = L/n
+def hi(n: int | None = None, data: Iterable[float] | None = None) -> tuple:
+    """Return average statistics for the high scenario."""
+    if data is None:
+        data = load_results()
+    return _compute_stats(list(data), 14)
 
-    with open('results.txt', 'r') as f:
-        count = 0
-        waiting = 0
-        for line in f:
-            if count % 21 == 16: #this is the remainder operator
-                line = line.strip('\n')
-                waiting = waiting + float(line)
-            count+=1
-        waiting = waiting/n
-
-    with open('results.txt', 'r') as f:
-        count = 0
-        SL = 0
-        for line in f:
-            if count % 21 == 17: #this is the remainder operator
-                line = line.strip('\n')
-                SL = SL + float(line)
-            count+=1
-        SL = SL/n
-
-    with open('results.txt', 'r') as f:
-        count = 0
-        ASA = 0
-        for line in f:
-            if count % 21 == 18: #this is the remainder operator
-                line = line.strip('\n')
-                ASA = ASA + float(line)
-            count+=1
-        ASA = ASA/n
-
-    with open('results.txt', 'r') as f:
-        count = 0
-        wait = 0
-        for line in f:
-            if count % 21 == 19: #this is the remainder operator
-                line = line.strip('\n')
-                wait = wait + float(line)
-            count+=1
-        wait = wait/n
-
-    with open('results.txt', 'r') as f:
-        count = 0
-        work_done = 0
-        for line in f:
-            if count % 21 == 20: #this is the remainder operator
-                line = line.strip('\n')
-                work_done = work_done + float(line)
-            count+=1
-        work_done = work_done/n
-    
-    return professionals, helpers, waiting, SL, ASA, wait, work_done
