@@ -81,11 +81,23 @@ class WorkerType:
             return self.maintenance
 
 
-def build_worker_list(skill_matrix, team_size):
-    """Return a list of :class:`WorkerType` objects built from ``skill_matrix``.
+def build_worker_list(skill_matrix, team_size, quality_levels=None, helper_skill=5):
+    """Return a list of :class:`WorkerType` built from ``skill_matrix``.
 
-    ``team_size`` specifies the number of workers per department.
+    Parameters
+    ----------
+    skill_matrix : array-like
+        Matrix describing the primary and secondary skills for each worker.
+    team_size : list[int]
+        Number of workers per department.
+    quality_levels : list[int], optional
+        Specialist skill level for each department. ``[8, 8, 8, 8]`` by default.
+    helper_skill : int, optional
+        Skill level assigned to secondary skills. Defaults to ``5``.
     """
+
+    if quality_levels is None:
+        quality_levels = [8, 8, 8, 8]
 
     # Create workers for each department according to ``team_size``
     workers: list[WorkerType] = []
@@ -99,23 +111,26 @@ def build_worker_list(skill_matrix, team_size):
 
     # Assign skills using the provided matrix
     for idx, worker in enumerate(workers):
-        if skill_matrix[idx, 0] == 1:
-            worker.sales = 8
-        if skill_matrix[idx, 0] == 2:
-            worker.logistics = 8
-        if skill_matrix[idx, 0] == 3:
-            worker.programming = 8
-        if skill_matrix[idx, 0] == 4:
-            worker.maintenance = 8
+        primary = skill_matrix[idx, 0]
+        secondary = skill_matrix[idx, 1]
 
-        if skill_matrix[idx, 1] == 1:
-            worker.sales = 5
-        if skill_matrix[idx, 1] == 2:
-            worker.logistics = 5
-        if skill_matrix[idx, 1] == 3:
-            worker.programming = 5
-        if skill_matrix[idx, 1] == 4:
-            worker.maintenance = 5
+        if primary == 1:
+            worker.sales = quality_levels[0]
+        if primary == 2:
+            worker.logistics = quality_levels[1]
+        if primary == 3:
+            worker.programming = quality_levels[2]
+        if primary == 4:
+            worker.maintenance = quality_levels[3]
+
+        if secondary == 1:
+            worker.sales = helper_skill
+        if secondary == 2:
+            worker.logistics = helper_skill
+        if secondary == 3:
+            worker.programming = helper_skill
+        if secondary == 4:
+            worker.maintenance = helper_skill
 
     return workers
 
