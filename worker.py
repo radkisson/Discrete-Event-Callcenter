@@ -1,11 +1,23 @@
-import itertools  # Helper for constructing the worker matrices
-from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
+from data import team_size, A, B, C, DEPARTMENT_SLA  # Matrices generated in data.py
 
 # Define the worker objects
 
 class WorkerType:
 
     def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
+        """Create a new worker.
+
+        Parameters
+        ----------
+        department : int
+            Department this worker belongs to.
+        number : int
+            Worker identifier.
+        sales, logistics, programming, maintenance : int
+            Skill level for each department.
+        sla : float
+            SLA goal in minutes for this worker's department.
+        """
         # Basic worker data
         self.department = department  # Department this worker belongs to
         self.number = number  # Worker identifier
@@ -14,7 +26,8 @@ class WorkerType:
         self.logistics = logistics
         self.programming = programming
         self.maintenance = maintenance
-        self.sla = 0  # SLA for the department
+        # service level agreement for the worker's department
+        self.sla = sla
         self.tracer = "Kaixo"
     
     def __repr__(self):
@@ -63,7 +76,7 @@ workers = []  # Initial empty list of workers
 for i in team_size:  # Build the first worker list
     for j in range(i):
         workers.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers[-1].sla = tSLA[dept]
+        workers[-1].sla = DEPARTMENT_SLA[dept]
     dept = dept + 1
 
 for i in range(len(workers)):
@@ -95,7 +108,7 @@ workers2 = []  # Second worker matrix
 for i in team_size:  # Build the second worker list
     for j in range(i):
         workers2.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers2[-1].sla = tSLA[dept]
+        workers2[-1].sla = DEPARTMENT_SLA[dept]
     dept = dept + 1
 
 for i in range(len(workers2)):
@@ -127,7 +140,7 @@ workers3 = []  # Third worker matrix
 for i in team_size:  # Build the third worker list
     for j in range(i):
         workers3.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
-        workers3[-1].sla = tSLA[dept]
+        workers3[-1].sla = DEPARTMENT_SLA[dept]
     dept = dept + 1
 
 for i in range(len(workers3)):

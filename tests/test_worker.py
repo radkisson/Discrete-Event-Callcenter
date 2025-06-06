@@ -15,7 +15,8 @@ sys.modules['data'] = types.SimpleNamespace(
     A=DummyMatrix(),
     B=DummyMatrix(),
     C=DummyMatrix(),
-    tSLA=[],
+    DEPARTMENT_SLA=[],
+    tSLA=[],  # backward compatibility
     call_input_list=[],
 )
 
@@ -29,3 +30,8 @@ def test_next_available_single_call():
     call.handle_time = 3
     worker.schedule.append(call)
     assert worker.next_available() == 8
+
+
+def test_constructor_stores_sla():
+    worker = WorkerType(0, 0, 0, 0, 0, 0, 15)
+    assert worker.sla == 15

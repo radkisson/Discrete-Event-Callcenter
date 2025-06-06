@@ -4,13 +4,27 @@ class Call:
     """Simple representation of an incoming call."""
 
     def __init__(self, time, duration, department, sla):
+        """Create a new call.
+
+        Parameters
+        ----------
+        time : float
+            Minute when the call arrives.
+        duration : float
+            Duration of the call in minutes.
+        department : int
+            Department that should handle the call.
+        sla : float
+            Service Level Agreement target in minutes. The call should be
+            resolved within this time once answered.
+        """
         # minute when the call arrives
         self.time = time
         # duration of the call in minutes
         self.duration = duration
         # department that should handle the call
         self.department = department
-        # service level agreement for the call
+        # service level agreement target for the call
         self.sla = sla
         # minute when the call is actually handled
         self.handle_time = 0

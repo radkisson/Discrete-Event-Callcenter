@@ -1,7 +1,7 @@
 from call import calls
 from filter import first_level, second_level, sort_by_work_time
 from worker import workers
-from data import tSLA, team_size  # Imported data
+from data import DEPARTMENT_SLA, team_size  # Imported data
 
 professionals = 0
 helpers = 0
@@ -58,11 +58,12 @@ def SL():  # Percentage of calls that waited less than 5 minutes in queue
             count = count + 1
     return count / len(calls)
 
-def ASA():  # Share of calls solved within the SLA once answered
+def ASA():
+    """Share of calls solved within the SLA once answered."""
     count = 0
     for i in range(len(calls)):
         j = int(calls[i].department)
-        if calls[i].handle_time + calls[i].duration - calls[i].time < tSLA[j]:
+        if calls[i].handle_time + calls[i].duration - calls[i].time < DEPARTMENT_SLA[j]:
             count = count + 1
     return count / len(calls)
 

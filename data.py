@@ -59,7 +59,13 @@ work_hours = 8  # Working hours per day
 total_minutes = work_hours * 60  # Total work time in minutes
 department_ratio = np.array([.35, .18, .25, .22])  # Department workload proportions
 max_calls = [200, 180, 270, 110]  # Maximum calls per department
-tSLA = np.array([18.0, 12.0, 10.0, 25.0])  # SLA target per department
+
+# Target resolution time (in minutes) for each department.
+# Calls should be solved within this timeframe once answered.
+DEPARTMENT_SLA = np.array([18.0, 12.0, 10.0, 25.0])
+
+# Alias kept for backward compatibility with existing imports.
+tSLA = DEPARTMENT_SLA
 incoming_calls = np.array([180, 160, 250, 95])  # Incoming calls per department
 
 A = np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
@@ -81,19 +87,26 @@ call_durations_cum  = np.array([ np.array([call_durations[j][0:i].sum() for i in
 # Matrix of incoming calls per department (time, duration, type, SLA)
 
 all_calls  = np.array(
-    [np.array([ np.array([arrival_times[i][j],call_durations[i][j],i,tSLA[i]]) for j in range(incoming_calls[i])]) for i in range(4)]
+    [
+        np.array([
+            np.array([arrival_times[i][j], call_durations[i][j], i, DEPARTMENT_SLA[i]])
+            for j in range(incoming_calls[i])
+        ])
+        for i in range(4)
+    ]
+)
 )
 
-# Proportion of calls that will miss the SLA even if answered immediately
-
-overSLA = np.zeros(4)  # Initialize result list
+# Proportion of calls that would exceed the SLA even if answered immediately.
+# Index corresponds to the department.
+overSLA = np.zeros(4)
 
 for group in range(4):
     over_sla_count = 0
     for call_idx in range(incoming_calls[group]):
         if all_calls[group][call_idx][1] > all_calls[group][call_idx][3]:
             over_sla_count = over_sla_count + 1
-    overSLA[group] = over_sla_count / max_calls[group]  # Ratio of calls that exceed the SLA
+    overSLA[group] = over_sla_count / max_calls[group]  # Fraction exceeding the SLA
 
 
 call_matrix = np.concatenate((all_calls[0], all_calls[1], all_calls[2], all_calls[3]), axis=0)  # Join all departments
