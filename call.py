@@ -1,3 +1,10 @@
+"""Create :class:`Call` instances from generated input data.
+
+The data module produces :data:`call_input_list` which contains the arrival
+time, duration, department and SLA for every incoming call.  This module wraps
+those records into :class:`Call` objects and exposes them as :data:`calls`.
+"""
+
 from data import call_input_list
 
 class Call:
