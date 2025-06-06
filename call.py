@@ -19,6 +19,10 @@ class Call:
         """Return the time this call waited in queue."""
         return self.handle_time - self.time
 
+    def delta_t(self):
+        """Return the waiting time before this call was handled."""
+        return self.wait_time()
+
 # Build the list of calls using the generated input matrix
 calls = [
     Call(call_input_list[i][0][0], call_input_list[i][0][1],
