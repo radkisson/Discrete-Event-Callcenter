@@ -49,12 +49,18 @@ class WorkerType:
             return available
     
     def is_free(self, call_obj):  # Check if the worker can take the call
+        """Return ``True`` if this worker can handle ``call_obj`` immediately."""
+
+        # A worker with an empty schedule is immediately free
         if self.next_available() == 0:
-            return 1
+            return True
+
+        # Otherwise they are free if the last scheduled call finishes before the
+        # new call arrives
         if self.next_available() < call_obj.time:
-            return 1
-        else:
-            return 0
+            return True
+
+        return False
         
     def work_time(self):  # Total time this worker has been busy
         time = 0
