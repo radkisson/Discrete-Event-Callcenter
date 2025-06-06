@@ -1,5 +1,5 @@
 import argparse
-import subprocess
+import algoritmo
 import stats
 
 
@@ -13,23 +13,11 @@ def main():
     n = 10
 
     if args.simulate:
-        for _ in range(1):
-            with open("results.txt", "w") as f:
-                for _ in range(n):
-                    subprocess.check_call([
-                        "python",
-                        "algoritmo.py",
-                    ], stdout=f, stderr=subprocess.STDOUT)
-    # for scriptInstance in range(1):
-    #     sys.stdout=open('med.txt','w')
-    #     for i in range(n):
-    #         subprocess.check_call(['python','algoritmo.py'], \
-    #             stdout=sys.stdout, stderr=subprocess.STDOUT)
-    # for scriptInstance in range(1):
-    #     sys.stdout=open('hi.txt','w')
-    #     for i in range(n):
-    #         subprocess.check_call(['python','algoritmo.py'], \
-    #             stdout=sys.stdout, stderr=subprocess.STDOUT)
+        with open("results.txt", "w") as f:
+            for _ in range(n):
+                result = algoritmo.run_simulation()
+                for value in result:
+                    f.write(f"{value}\n")
 
     elif args.stats:
         professionals, helpers, waiting, SL, ASA, wait, work_done = stats.low(n)
