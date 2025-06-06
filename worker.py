@@ -1,58 +1,62 @@
 import itertools  # Helper for constructing the worker matrices
 from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
 
-# Langileak objetu bezala definituko ditugu
+# Define the worker objects
 
 class WorkerType:
 
-    def __init__(self,departamentua,zenbakia,komertziala, logistika, programazioa, mantentze, sla):  #Definituko ditugun aldagaiak
-        self.departamentua = departamentua # Agente bakoitzaren departamentua.
-        self.zenbakia      = zenbakia # Agente bakoitzaren zenbakia (departamentu bakoitzean 3-5 agente daude)
-        self.ordutegia     = [] # Agente bakoitzak egiten duen lan denbora ikusteko lista hutsa sortuko dugu
-        self.komertziala   = komertziala # Departamentu komertziala definituko dugu
-        self.logistika     = logistika # Departamentu logistikoa definituko dugu
-        self.programazioa  = programazioa  # Departamentu informatikoa definituko dugu
-        self.mantentze     = mantentze # Departamentu mantenimendukoa definituko dugu
-        self.sla           = 0 # SLA definituko dugu hasierako bektore bat bezala
-        self.tracer        = "Kaixo" # Hasierako bektorea
+    def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
+        # Basic worker data
+        self.department = department  # Department this worker belongs to
+        self.number = number  # Worker identifier
+        self.schedule = []  # List of handled calls
+        self.sales = sales  # Skills per department
+        self.logistics = logistics
+        self.programming = programming
+        self.maintenance = maintenance
+        self.sla = 0  # SLA for the department
+        self.tracer = "Kaixo"
     
     def __repr__(self):
         """Return a readable representation of the worker."""
         return 'WorkerType: Department {} Number {}'.format(
-            self.departamentua, self.zenbakia
+            self.department, self.number
         )
         
-    def noizlibre(self):  # Ikusiko dugu ea agentea libre dagoen edo noiz geldituko den libre
-        if len(self.ordutegia) == 0: # Libre dago
+    def next_available(self):  # When will this worker be free?
+        if len(self.schedule) == 0:
             return 0
         else:
-            available = self.ordutegia[-1].ordua + self.ordutegia[-1].iraupena + self.ordutegia[-1].delta_t()
-            # Ez badago libre kalkulatu dezakegu noiz geldituko den libre
+            available = (
+                self.schedule[-1].time
+                + self.schedule[-1].duration
+                + self.schedule[-1].delta_t()
+            )
             return available
     
-    def libre(self,deiak): #Ikusiko dugu ea agentea libre dagoen eta deia har dezakeen
-        if self.noizlibre() == 0: # Libre dago agentea
+    def is_free(self, call_obj):  # Check if the worker can take the call
+        if self.next_available() == 0:
             return 1
-        if self.noizlibre() < deiak.ordua :  # Gainera behar dugu lehenego agentea libre gelditzea deia iristen den momentuan
+        if self.next_available() < call_obj.time:
             return 1
-        else: # Ez dago libre
+        else:
             return 0
         
-    def landenbora(self):  # Kalkulatuko dugu agente bakoitzak lan egindako denbora
+    def work_time(self):  # Total time this worker has been busy
         time = 0
-        for i in range(len(self.ordutegia)):
-            time = time + self.ordutegia[i].iraupena
+        for i in range(len(self.schedule)):
+            time = time + self.schedule[i].duration
         return time
     
-    def aldaketa(self, zenbakia):  # Dei sarrera zerrenda matrizean zenbaki bakoitza departamentu bakoitzari egokituko zaio
-        if zenbakia == 1:
-            return self.komertziala
-        if zenbakia == 2:
-            return self.logistika
-        if zenbakia == 3:
-            return self.programazioa
-        if zenbakia == 4:
-            return self.mantentze
+    def skill_for(self, number):  # Return the skill value for the given department
+        if number == 1:
+            return self.sales
+        if number == 2:
+            return self.logistics
+        if number == 3:
+            return self.programming
+        if number == 4:
+            return self.maintenance
 
 dept = 0
 workers = []  # Initial empty list of workers
@@ -63,28 +67,28 @@ for i in team_size:  # Build the first worker list
     dept = dept + 1
 
 for i in range(len(workers)):
-    workers[i].komertziala = 2
-    workers[i].logistika = 2
-    workers[i].programazioa = 2
-    workers[i].mantentze = 2
+    workers[i].sales = 2
+    workers[i].logistics = 2
+    workers[i].programming = 2
+    workers[i].maintenance = 2
 
 for i in range(len(workers)):
     if A[i,0] == 1:
-        workers[i].komertziala = 8
+        workers[i].sales = 8
     if A[i,0] == 2:
-        workers[i].logistika = 8
+        workers[i].logistics = 8
     if A[i,0] == 3:
-        workers[i].programazioa = 8
+        workers[i].programming = 8
     if A[i,0] == 4:
-        workers[i].mantentze = 8
+        workers[i].maintenance = 8
     if A[i,1] == 1:
-        workers[i].komertziala = 5
+        workers[i].sales = 5
     if A[i,1] == 2:
-        workers[i].logistika = 5
+        workers[i].logistics = 5
     if A[i,1] == 3:
-        workers[i].programazioa = 5
+        workers[i].programming = 5
     if A[i,1] == 4:
-        workers[i].mantentze = 5
+        workers[i].maintenance = 5
 
 dept = 0
 workers2 = []  # Second worker matrix
@@ -95,28 +99,28 @@ for i in team_size:  # Build the second worker list
     dept = dept + 1
 
 for i in range(len(workers2)):
-    workers2[i].komertziala = 2
-    workers2[i].logistika = 2
-    workers2[i].programazioa = 2
-    workers2[i].mantentze = 2
+    workers2[i].sales = 2
+    workers2[i].logistics = 2
+    workers2[i].programming = 2
+    workers2[i].maintenance = 2
 
 for i in range(len(workers2)):
     if B[i,0] == 1:
-        workers2[i].komertziala = 8
+        workers2[i].sales = 8
     if B[i,0] == 2:
-        workers2[i].logistika = 8
+        workers2[i].logistics = 8
     if B[i,0] == 3:
-        workers2[i].programazioa = 8
+        workers2[i].programming = 8
     if B[i,0] == 4:
-        workers2[i].mantentze = 8
+        workers2[i].maintenance = 8
     if B[i,1] == 1:
-        workers2[i].komertziala = 5
+        workers2[i].sales = 5
     if B[i,1] == 2:
-        workers2[i].logistika = 5
+        workers2[i].logistics = 5
     if B[i,1] == 3:
-        workers2[i].programazioa = 5
+        workers2[i].programming = 5
     if B[i,1] == 4:
-        workers2[i].mantentze = 5
+        workers2[i].maintenance = 5
     
 dept = 0
 workers3 = []  # Third worker matrix
@@ -127,25 +131,25 @@ for i in team_size:  # Build the third worker list
     dept = dept + 1
 
 for i in range(len(workers3)):
-    workers3[i].komertziala = 2
-    workers3[i].logistika = 2
-    workers3[i].programazioa = 2
-    workers3[i].mantentze = 2
+    workers3[i].sales = 2
+    workers3[i].logistics = 2
+    workers3[i].programming = 2
+    workers3[i].maintenance = 2
 
 for i in range(len(workers3)):
     if C[i,0] == 1:
-        workers3[i].komertziala = 8
+        workers3[i].sales = 8
     if C[i,0] == 2:
-        workers3[i].logistika = 8
+        workers3[i].logistics = 8
     if C[i,0] == 3:
-        workers3[i].programazioa = 8
+        workers3[i].programming = 8
     if C[i,0] == 4:
-        workers3[i].mantentze = 8
+        workers3[i].maintenance = 8
     if C[i,1] == 1:
-        workers3[i].komertziala = 5
+        workers3[i].sales = 5
     if C[i,1] == 2:
-        workers3[i].logistika = 5
+        workers3[i].logistics = 5
     if C[i,1] == 3:
-        workers3[i].programazioa = 5
+        workers3[i].programming = 5
     if C[i,1] == 4:
-        workers3[i].mantentze = 5
+        workers3[i].maintenance = 5

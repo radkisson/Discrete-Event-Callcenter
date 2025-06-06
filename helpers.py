@@ -1,5 +1,6 @@
 import numpy as np
 
+# Example skill arrays used during experimentation
 k1 = [8, 6, 2, 1]
 k2 = [8, 2, 6, 2]
 k3 = [8, 2, 1, 1]

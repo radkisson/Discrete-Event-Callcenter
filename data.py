@@ -1,9 +1,9 @@
 
 import numpy as np
-import numpy.random as rnd #numpy paketea kargatuko dugu, ausazko zenbakiak sortzeko erabiliko dugu
+import numpy.random as rnd  # used to generate random numbers
 import helpers
 
-# AGENTE GAITASUN matrizeak definituko dugu
+# Example matrices of worker skills
 
 # k1 = [8, 6, 2, 1]
 # k2 = [8, 2, 6, 2]
@@ -55,49 +55,49 @@ import helpers
 
 
 team_size = np.array([5, 3, 4, 3])  # Number of workers per department
-ordutarte = 8 #Lanordua
-minutukopuru = ordutarte*60 #Lan egin beharreko denbora minutuetan
-proportzio = np.array([.35,.18,.25,.22]) #Departamentu bakoitzaren proportzioa
-maxdeikopuru = [200,180,270,110] # Departamentu bakoitzeko dei kopuru maximoa
-tSLA = np.array([18.0,12.0,10.0,25.0]) #SLA departamentu bakoitzeko
-deikopuru = np.array([180,160,250,95]) # Departamentu bakoitzera iristen diren deiak
+work_hours = 8  # Working hours per day
+total_minutes = work_hours * 60  # Total work time in minutes
+department_ratio = np.array([.35, .18, .25, .22])  # Department workload proportions
+max_calls = [200, 180, 270, 110]  # Maximum calls per department
+tSLA = np.array([18.0, 12.0, 10.0, 25.0])  # SLA target per department
+incoming_calls = np.array([180, 160, 250, 95])  # Incoming calls per department
 
 A = np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
 B = np.hstack([np.array([1,0,1,0,1,0,1,0,1,0,2,0,2,0,2,0,3,0,3,0,3,0,3,0,4,0,4,0,4,0]).reshape(15,2),np.zeros([15,2])])
 C =  np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
 
-langileekguztira = team_size.sum()  # Total number of workers
-lanminututalde = minutukopuru * team_size  # Work minutes per department
-lanminutes = lanminututalde.sum() #Guztira egin beharreko lan kopurua minutuetan
-minutuzama = proportzio*lanminutes #Departamentu bakoitzak lan egin beharreko denbora minutuetan proportzioa kontutan hartuz
-deidenbora = [minutuzama[i]*pow(maxdeikopuru[i],-1) for i in range(4)]  #Dei bakoitzeko, departamentu bakoitzak duen denbora atenditzeko
-sarreratasa = deikopuru/minutukopuru  # Departamentu bakoitzean minutuko iristen diren dei kopurua
+total_workers = team_size.sum()  # Total number of workers
+work_minutes_department = total_minutes * team_size  # Work minutes per department
+total_work_minutes = work_minutes_department.sum()  # Total amount of work in minutes
+minutes_per_dept = department_ratio * total_work_minutes  # Minutes assigned to each department
+average_call_time = [minutes_per_dept[i] * pow(max_calls[i], -1) for i in range(4)]  # Average handling time per call
+arrival_rate = incoming_calls / total_minutes  # Arrival rate per minute
 
-deisarrera   = np.array([rnd.exponential(1/sarreratasa[i],deikopuru[i]) for i in range(4)])  # Ausazko zenbakiak sortuko ditugu iristen diren deien ordutegia sortzeko
-deizerrenda  = np.array([ np.array([deisarrera[j][0:i].sum() for i in range(maxdeikopuru[j])]) for j in range(4)])  # Kalkulatutako ausazko zenbakiekin dei bakoitza iritsi den ordutegia zehaztuko dugu
-deisarrera2   = np.array([rnd.exponential(deidenbora[i],deikopuru[i]) for i in range(4)])  # Ausazko zenbakiak sortuko ditugu iritsitako deien iraupena sortzeko
-deizerrenda2  = np.array([ np.array([deisarrera2[j][0:i].sum() for i in range(maxdeikopuru[j])]) for j in range(4)])
+arrivals = np.array([rnd.exponential(1 / arrival_rate[i], incoming_calls[i]) for i in range(4)])  # Call arrival times
+arrival_times = np.array([np.array([arrivals[j][0:i].sum() for i in range(max_calls[j])]) for j in range(4)])  # Cumulated arrival times
+call_durations = np.array([rnd.exponential(average_call_time[i], incoming_calls[i]) for i in range(4)])  # Call durations
+call_durations_cum  = np.array([ np.array([call_durations[j][0:i].sum() for i in range(max_calls[j])]) for j in range(4)])
 
-# DEPARTAMENTU BAKOITZEKO IRISTEN DIREN DEIEN MATRIZEA(ORDUTEGIA, IRAUPENA, MOTA, SlA)
+# Matrix of incoming calls per department (time, duration, type, SLA)
 
-deisarreraguztia  = np.array(
-    [np.array([ np.array([deizerrenda[i][j],deisarrera2[i][j],i,tSLA[i]]) for j in range(deikopuru[i])]) for i in range(4)]
+all_calls  = np.array(
+    [np.array([ np.array([arrival_times[i][j],call_durations[i][j],i,tSLA[i]]) for j in range(incoming_calls[i])]) for i in range(4)]
 )
 
-# SLA beteko ez duten deien proportzioa, nahiz eta oso azkar atendituak izan (konponketa denbora > SLA)
+# Proportion of calls that will miss the SLA even if answered immediately
 
-overSLA = np.zeros(4) #Lista hutsa sortuko dugu
+overSLA = np.zeros(4)  # Initialize result list
 
 for group in range(4):
-    zenbakia_deiak_gorako = 0
-    for deiak_i in range(deikopuru[group]):
-        if deisarreraguztia[group][deiak_i][1] > deisarreraguztia[group][deiak_i][3]:
-            zenbakia_deiak_gorako = zenbakia_deiak_gorako + 1
-    overSLA[group] = zenbakia_deiak_gorako/maxdeikopuru[group] # Kalkulatuko dugu departamentu bakoitzean zenbat deik SLA pasako duten nahiz eta momentuan atendituak diren.
+    over_sla_count = 0
+    for call_idx in range(incoming_calls[group]):
+        if all_calls[group][call_idx][1] > all_calls[group][call_idx][3]:
+            over_sla_count = over_sla_count + 1
+    overSLA[group] = over_sla_count / max_calls[group]  # Ratio of calls that exceed the SLA
 
 
-matrizea = np.concatenate((deisarreraguztia[0],deisarreraguztia[1],deisarreraguztia[2],deisarreraguztia[3]),axis=0) # Orain arte sortu ditugun matrizeak batera jarriko ditugu
+call_matrix = np.concatenate((all_calls[0], all_calls[1], all_calls[2], all_calls[3]), axis=0)  # Join all departments
 
 call_input_list = np.sort(
-    matrizea.view("float,float,float,float"), order=["f0"], axis=0
+    call_matrix.view("float,float,float,float"), order=["f0"], axis=0
 )  # Sorted call matrix by arrival time
