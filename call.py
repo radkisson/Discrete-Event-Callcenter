@@ -1,19 +1,27 @@
-from data import deisarrerazerrenda
+from data import call_input_list
 
-# DEIAK OBJETU BEZALA DEFINITUKO DITUGU 
+class Call:
+    """Simple representation of an incoming call."""
 
-class Deiak:
+    def __init__(self, time, duration, department, sla):
+        # minute when the call arrives
+        self.time = time
+        # duration of the call in minutes
+        self.duration = duration
+        # department that should handle the call
+        self.department = department
+        # service level agreement for the call
+        self.sla = sla
+        # minute when the call is actually handled
+        self.handle_time = 0
 
-    def __init__(self, ordua, iraupena, departamentua, sla):
-        self.ordua          =  ordua # Dei bakoitza iristen den denbora minutuetan
-        self.iraupena       =  iraupena # Dei bakoitzaren iraupena minutuetan
-        self.departamentua  =  departamentua # Dei bakoitzaren departamentua
-        self.sla            =  sla # Dei bakoitzaren SLA
-        self.denbora        =  0 #Dei bakoitza atenditua den momentua (1. Deia iristen den momentuan hartuko dugu)
-    
-    def delta_t(self):  # Kolan egondako denbora kalkulatuko dugu:
-        delta  =  self.denbora - self.ordua # Deia atenditu duten momentua- deia iritsi den momentua
-        return delta
-    
-#Matrize bat sortuko dugu dei bakoitzaren informazioa gordez    
-deiak2 = [Deiak(deisarrerazerrenda[i][0][0],deisarrerazerrenda[i][0][1],deisarrerazerrenda[i][0][2],deisarrerazerrenda[i][0][3]) for i in range(len(deisarrerazerrenda))]
+    def wait_time(self):
+        """Return the time this call waited in queue."""
+        return self.handle_time - self.time
+
+# Build the list of calls using the generated input matrix
+calls = [
+    Call(call_input_list[i][0][0], call_input_list[i][0][1],
+         call_input_list[i][0][2], call_input_list[i][0][3])
+    for i in range(len(call_input_list))
+]

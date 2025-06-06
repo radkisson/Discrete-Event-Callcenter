@@ -1,17 +1,19 @@
 # Agente espezializatuak eta lagundu dezaketenak sortuko ditugu
-from worker import langile, langile2, langile3 # Langileak importatuko ditugu
+from worker import workers, workers2, workers3  # Import worker lists
 
-def langile_gaitasun_departamentua(zenbakia): #Sortuko dugu agenteen lista bat ordenatuta gaitasunengatik
-    return sorted(langile , key=lambda x: x.aldaketa(zenbakia), reverse=True)
+def workers_by_skill(number):
+    """Return workers sorted by skill for the given department."""
+    return sorted(workers, key=lambda x: x.aldaketa(number), reverse=True)
 
-def langile_gaitasun_departamentua2(zenbakia): 
-    return sorted(langile2 , key=lambda x: x.aldaketa(zenbakia), reverse=True)
+def workers_by_skill2(number):
+    return sorted(workers2, key=lambda x: x.aldaketa(number), reverse=True)
 
-def langile_gaitasun_departamentua3(zenbakia): 
-    return sorted(langile3 , key=lambda x: x.aldaketa(zenbakia), reverse=True)
+def workers_by_skill3(number):
+    return sorted(workers3, key=lambda x: x.aldaketa(number), reverse=True)
 
-def lehenengo_maila(departamentua): #Sortuko ditugu dei jakin baterako ditugun agente espezializatuak
-    lista = langile_gaitasun_departamentua(departamentua)
+def first_level(department):
+    """Return specialized agents for a given call type."""
+    lista = workers_by_skill(department)
     lista.reverse()
     length = len(lista)
     zenbatu = 0
@@ -23,8 +25,8 @@ def lehenengo_maila(departamentua): #Sortuko ditugu dei jakin baterako ditugun a
     lista.reverse()
     return lista
 
-def lehenengo_maila2(departamentua): #Sortuko ditugu dei jakin baterako ditugun agente espezializatuak
-    lista = langile_gaitasun_departamentua2(departamentua)
+def first_level2(department):
+    lista = workers_by_skill2(department)
     lista.reverse()
     length = len(lista)
     zenbatu = 0
@@ -36,8 +38,8 @@ def lehenengo_maila2(departamentua): #Sortuko ditugu dei jakin baterako ditugun 
     lista.reverse()
     return lista
 
-def lehenengo_maila3(departamentua): #Sortuko ditugu dei jakin baterako ditugun agente espezializatuak
-    lista = langile_gaitasun_departamentua3(departamentua)
+def first_level3(department):
+    lista = workers_by_skill3(department)
     lista.reverse()
     length = len(lista)
     zenbatu = 0
@@ -49,8 +51,9 @@ def lehenengo_maila3(departamentua): #Sortuko ditugu dei jakin baterako ditugun 
     lista.reverse()
     return lista
 
-def bigarren_maila(departamentua): #Dei jakin baterako lagundu dezaketen agenteak
-    lista = langile_gaitasun_departamentua(departamentua)
+def second_level(department):
+    """Return helper agents for a given call type."""
+    lista = workers_by_skill(department)
     zenbatu = 0
     for i in range(len(lista)):
             konparatu = lista[i].aldaketa(departamentua)
@@ -65,8 +68,8 @@ def bigarren_maila(departamentua): #Dei jakin baterako lagundu dezaketen agentea
                 break
     return lista
 
-def bigarren_maila2(departamentua): #Dei jakin baterako lagundu dezaketen agenteak
-    lista = langile_gaitasun_departamentua2(departamentua)
+def second_level2(department):
+    lista = workers_by_skill2(department)
     zenbatu = 0
     for i in range(len(lista)):
             konparatu = lista[i].aldaketa(departamentua)
@@ -81,8 +84,8 @@ def bigarren_maila2(departamentua): #Dei jakin baterako lagundu dezaketen agente
                 break
     return lista
 
-def bigarren_maila3(departamentua): #Dei jakin baterako lagundu dezaketen agenteak
-    lista = langile_gaitasun_departamentua3(departamentua)
+def second_level3(department):
+    lista = workers_by_skill3(department)
     zenbatu = 0
     for i in range(len(lista)):
             konparatu = lista[i].aldaketa(departamentua)
@@ -97,17 +100,18 @@ def bigarren_maila3(departamentua): #Dei jakin baterako lagundu dezaketen agente
                 break
     return lista
 
-def denbora_iragarria(langile):  #Sortuko dugu agenteen lista bat, lan egindako denborarekin alderantziz ordenatuta 
-    aldiz = sorted(langile , key=lambda x: x.landenbora(), reverse=True)
-    aldiz.reverse()
-    return aldiz
+def sort_by_work_time(worker_list):
+    """Return workers sorted by amount of work done."""
+    ordered = sorted(worker_list, key=lambda x: x.landenbora(), reverse=True)
+    ordered.reverse()
+    return ordered
 
-def denbora_iragarria2(langile2):  #Sortuko dugu agenteen lista bat, lan egindako denborarekin alderantziz ordenatuta 
-    aldiz = sorted(langile2 , key=lambda x: x.landenbora(), reverse=True)
-    aldiz.reverse()
-    return aldiz
+def sort_by_work_time2(worker_list):
+    ordered = sorted(worker_list, key=lambda x: x.landenbora(), reverse=True)
+    ordered.reverse()
+    return ordered
 
-def denbora_iragarria3(langile2):  #Sortuko dugu agenteen lista bat, lan egindako denborarekin alderantziz ordenatuta 
-    aldiz = sorted(langile2 , key=lambda x: x.landenbora(), reverse=True)
-    aldiz.reverse()
-    return aldiz
+def sort_by_work_time3(worker_list):
+    ordered = sorted(worker_list, key=lambda x: x.landenbora(), reverse=True)
+    ordered.reverse()
+    return ordered

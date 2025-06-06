@@ -54,7 +54,7 @@ import helpers
 # m32 = [1, 6, 2, 8]
 
 
-langitalde = np.array([5 ,3 ,4, 3]) #Departamentu bakoitzeko langile kopurua
+team_size = np.array([5, 3, 4, 3])  # Number of workers per department
 ordutarte = 8 #Lanordua
 minutukopuru = ordutarte*60 #Lan egin beharreko denbora minutuetan
 proportzio = np.array([.35,.18,.25,.22]) #Departamentu bakoitzaren proportzioa
@@ -66,8 +66,8 @@ A = np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2
 B = np.hstack([np.array([1,0,1,0,1,0,1,0,1,0,2,0,2,0,2,0,3,0,3,0,3,0,3,0,4,0,4,0,4,0]).reshape(15,2),np.zeros([15,2])])
 C =  np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
 
-langileekguztira = langitalde.sum() #Langile kopuru osoa
-lanminututalde = minutukopuru*langitalde #Departamentu bakoitzak lan egin beharreko denbora minutuetan
+langileekguztira = team_size.sum()  # Total number of workers
+lanminututalde = minutukopuru * team_size  # Work minutes per department
 lanminutes = lanminututalde.sum() #Guztira egin beharreko lan kopurua minutuetan
 minutuzama = proportzio*lanminutes #Departamentu bakoitzak lan egin beharreko denbora minutuetan proportzioa kontutan hartuz
 deidenbora = [minutuzama[i]*pow(maxdeikopuru[i],-1) for i in range(4)]  #Dei bakoitzeko, departamentu bakoitzak duen denbora atenditzeko
@@ -98,4 +98,6 @@ for group in range(4):
 
 matrizea = np.concatenate((deisarreraguztia[0],deisarreraguztia[1],deisarreraguztia[2],deisarreraguztia[3]),axis=0) # Orain arte sortu ditugun matrizeak batera jarriko ditugu
 
-deisarrerazerrenda = np.sort(matrizea.view('float,float,float,float'),order=['f0'],axis=0) # Aurreko matrizea baina deiak iritsi diren moduan ordenatuko ditugu
+call_input_list = np.sort(
+    matrizea.view("float,float,float,float"), order=["f0"], axis=0
+)  # Sorted call matrix by arrival time
