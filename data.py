@@ -95,7 +95,6 @@ all_calls  = np.array(
         for i in range(4)
     ]
 )
-)
 
 # Proportion of calls that would exceed the SLA even if answered immediately.
 # Index corresponds to the department.
