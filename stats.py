@@ -1,13 +1,13 @@
 def low(n):
     with open('results.txt', 'r') as f:
         count = 0
-        Profesionalak = 0
+        professionals = 0
         for line in f:
             if count % 21 == 0: #this is the remainder operator
                 line = line.strip('\n')
-                Profesionalak = Profesionalak + float(line)
+                professionals = professionals + float(line)
             count+=1
-        Profesionalak = Profesionalak/n
+        professionals = professionals / n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -17,17 +17,17 @@ def low(n):
                 line = line.strip('\n')
                 L = L + float(line)
             count+=1
-        Langutzaileak = L/n
+        helpers = L / n
 
     with open('results.txt', 'r') as f:
         count = 0
-        Zain = 0
+        waiting = 0
         for line in f:
-            if count % 21 == 2: #this is the remainder operator
+            if count % 21 == 2:  # this is the remainder operator
                 line = line.strip('\n')
-                Zain = Zain + float(line)
+                waiting = waiting + float(line)
             count+=1
-        Zain = Zain/n
+        waiting = waiting / n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -61,26 +61,26 @@ def low(n):
 
     with open('results.txt', 'r') as f:
         count = 0
-        lan_egin = 0
+        work_done = 0
         for line in f:
             if count % 21 == 6: #this is the remainder operator
                 line = line.strip('\n')
-                lan_egin = lan_egin + float(line)
+                work_done = work_done + float(line)
             count+=1
-        lan_egin = lan_egin/n
+        work_done = work_done/n
     
-    return Profesionalak, Langutzaileak, Zain, SL, ASA, wait, lan_egin
+    return professionals, helpers, waiting, SL, ASA, wait, work_done
 
 def med(n):
     with open('results.txt', 'r') as f:
         count = 0
-        Profesionalak = 0
+        professionals = 0
         for line in f:
             if count % 21 == 7: #this is the remainder operator
                 line = line.strip('\n')
-                Profesionalak = Profesionalak + float(line)
+                professionals = professionals + float(line)
             count+=1
-        Profesionalak = Profesionalak/n
+        professionals = professionals/n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -90,17 +90,17 @@ def med(n):
                 line = line.strip('\n')
                 L = L + float(line)
             count+=1
-        Langutzaileak = L/n
+        helpers = L/n
 
     with open('results.txt', 'r') as f:
         count = 0
-        Zain = 0
+        waiting = 0
         for line in f:
             if count % 21 == 9: #this is the remainder operator
                 line = line.strip('\n')
-                Zain = Zain + float(line)
+                waiting = waiting + float(line)
             count+=1
-        Zain = Zain/n
+        waiting = waiting/n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -134,26 +134,26 @@ def med(n):
 
     with open('results.txt', 'r') as f:
         count = 0
-        lan_egin = 0
+        work_done = 0
         for line in f:
             if count % 21 == 13: #this is the remainder operator
                 line = line.strip('\n')
-                lan_egin = lan_egin + float(line)
+                work_done = work_done + float(line)
             count+=1
-        lan_egin = lan_egin/n
+        work_done = work_done/n
     
-    return Profesionalak, Langutzaileak, Zain, SL, ASA, wait, lan_egin
+    return professionals, helpers, waiting, SL, ASA, wait, work_done
 
 def hi(n):
     with open('results.txt', 'r') as f:
         count = 0
-        Profesionalak = 0
+        professionals = 0
         for line in f:
             if count % 21 == 14: #this is the remainder operator
                 line = line.strip('\n')
-                Profesionalak = Profesionalak + float(line)
+                professionals = professionals + float(line)
             count+=1
-        Profesionalak = Profesionalak/n
+        professionals = professionals/n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -163,17 +163,17 @@ def hi(n):
                 line = line.strip('\n')
                 L = L + float(line)
             count+=1
-        Langutzaileak = L/n
+        helpers = L/n
 
     with open('results.txt', 'r') as f:
         count = 0
-        Zain = 0
+        waiting = 0
         for line in f:
             if count % 21 == 16: #this is the remainder operator
                 line = line.strip('\n')
-                Zain = Zain + float(line)
+                waiting = waiting + float(line)
             count+=1
-        Zain = Zain/n
+        waiting = waiting/n
 
     with open('results.txt', 'r') as f:
         count = 0
@@ -207,12 +207,12 @@ def hi(n):
 
     with open('results.txt', 'r') as f:
         count = 0
-        lan_egin = 0
+        work_done = 0
         for line in f:
             if count % 21 == 20: #this is the remainder operator
                 line = line.strip('\n')
-                lan_egin = lan_egin + float(line)
+                work_done = work_done + float(line)
             count+=1
-        lan_egin = lan_egin/n
+        work_done = work_done/n
     
-    return Profesionalak, Langutzaileak, Zain, SL, ASA, wait, lan_egin
+    return professionals, helpers, waiting, SL, ASA, wait, work_done

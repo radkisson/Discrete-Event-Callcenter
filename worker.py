@@ -1,9 +1,9 @@
-import itertools # Pakete hau kargatuko dugu gero matrizeak errezago lotzeko
-from data import langitalde, A, B, C, tSLA # Data fitxerotik kargatuko ditugun matrizeak
+import itertools  # Helper for constructing the worker matrices
+from data import team_size, A, B, C, tSLA  # Matrices generated in data.py
 
 # Langileak objetu bezala definituko ditugu
 
-class Langileak_mota:
+class WorkerType:
 
     def __init__(self,departamentua,zenbakia,komertziala, logistika, programazioa, mantentze, sla):  #Definituko ditugun aldagaiak
         self.departamentua = departamentua # Agente bakoitzaren departamentua.
@@ -16,8 +16,11 @@ class Langileak_mota:
         self.sla           = 0 # SLA definituko dugu hasierako bektore bat bezala
         self.tracer        = "Kaixo" # Hasierako bektorea
     
-    def __repr__(self):   # Lortuko dugu agente bakoitza sailkatzea, departamentu eta zenbaki jakin batekin
-         return 'Langileak_mota: Departamentua {} Zenbakia {}'.format(self.departamentua,self.zenbakia) 
+    def __repr__(self):
+        """Return a readable representation of the worker."""
+        return 'WorkerType: Department {} Number {}'.format(
+            self.departamentua, self.zenbakia
+        )
         
     def noizlibre(self):  # Ikusiko dugu ea agentea libre dagoen edo noiz geldituko den libre
         if len(self.ordutegia) == 0: # Libre dago
@@ -52,97 +55,97 @@ class Langileak_mota:
             return self.mantentze
 
 dept = 0
-langile = [] # Hasteko lista hutsa sortuko dugu
-for i in langitalde: #Langileen matrizea sortuko dugu
+workers = []  # Initial empty list of workers
+for i in team_size:  # Build the first worker list
     for j in range(i):
-        langile.append(Langileak_mota(dept,j,0,0,0,0,0))
-        langile[-1].sla = tSLA[dept]
+        workers.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
+        workers[-1].sla = tSLA[dept]
     dept = dept + 1
 
-for i in range(len(langile)):
-    langile[i].komertziala  = 2
-    langile[i].logistika  = 2
-    langile[i].programazioa  = 2
-    langile[i].mantentze  = 2
+for i in range(len(workers)):
+    workers[i].komertziala = 2
+    workers[i].logistika = 2
+    workers[i].programazioa = 2
+    workers[i].mantentze = 2
 
-for i in range(len(langile)):
+for i in range(len(workers)):
     if A[i,0] == 1:
-        langile[i].komertziala  = 8
+        workers[i].komertziala = 8
     if A[i,0] == 2:
-        langile[i].logistika  = 8
+        workers[i].logistika = 8
     if A[i,0] == 3:
-        langile[i].programazioa  = 8
+        workers[i].programazioa = 8
     if A[i,0] == 4:
-        langile[i].mantentze  = 8
+        workers[i].mantentze = 8
     if A[i,1] == 1:
-        langile[i].komertziala  = 5
+        workers[i].komertziala = 5
     if A[i,1] == 2:
-        langile[i].logistika  = 5
+        workers[i].logistika = 5
     if A[i,1] == 3:
-        langile[i].programazioa  = 5
+        workers[i].programazioa = 5
     if A[i,1] == 4:
-        langile[i].mantentze  = 5
+        workers[i].mantentze = 5
 
 dept = 0
-langile2 = [] # Hasteko lista hutsa sortuko dugu
-for i in langitalde: #Langileen matrizea sortuko dugu
+workers2 = []  # Second worker matrix
+for i in team_size:  # Build the second worker list
     for j in range(i):
-        langile2.append(Langileak_mota(dept,j,0,0,0,0,0))
-        langile2[-1].sla = tSLA[dept]
+        workers2.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
+        workers2[-1].sla = tSLA[dept]
     dept = dept + 1
 
-for i in range(len(langile2)):
-    langile2[i].komertziala  = 2
-    langile2[i].logistika  = 2
-    langile2[i].programazioa  = 2
-    langile2[i].mantentze  = 2
+for i in range(len(workers2)):
+    workers2[i].komertziala = 2
+    workers2[i].logistika = 2
+    workers2[i].programazioa = 2
+    workers2[i].mantentze = 2
 
-for i in range(len(langile2)):
+for i in range(len(workers2)):
     if B[i,0] == 1:
-        langile2[i].komertziala  = 8
+        workers2[i].komertziala = 8
     if B[i,0] == 2:
-        langile2[i].logistika  = 8
+        workers2[i].logistika = 8
     if B[i,0] == 3:
-        langile2[i].programazioa  = 8
+        workers2[i].programazioa = 8
     if B[i,0] == 4:
-        langile2[i].mantentze  = 8
+        workers2[i].mantentze = 8
     if B[i,1] == 1:
-        langile2[i].komertziala  = 5
+        workers2[i].komertziala = 5
     if B[i,1] == 2:
-        langile2[i].logistika  = 5
+        workers2[i].logistika = 5
     if B[i,1] == 3:
-        langile2[i].programazioa  = 5
+        workers2[i].programazioa = 5
     if B[i,1] == 4:
-        langile2[i].mantentze  = 5
+        workers2[i].mantentze = 5
     
 dept = 0
-langile3 = [] # Hasteko lista hutsa sortuko dugu
-for i in langitalde: #Langileen matrizea sortuko dugu
+workers3 = []  # Third worker matrix
+for i in team_size:  # Build the third worker list
     for j in range(i):
-        langile3.append(Langileak_mota(dept,j,0,0,0,0,0))
-        langile3[-1].sla = tSLA[dept]
+        workers3.append(WorkerType(dept, j, 0, 0, 0, 0, 0))
+        workers3[-1].sla = tSLA[dept]
     dept = dept + 1
 
-for i in range(len(langile3)):
-    langile3[i].komertziala  = 2
-    langile3[i].logistika  = 2
-    langile3[i].programazioa  = 2
-    langile3[i].mantentze  = 2
+for i in range(len(workers3)):
+    workers3[i].komertziala = 2
+    workers3[i].logistika = 2
+    workers3[i].programazioa = 2
+    workers3[i].mantentze = 2
 
-for i in range(len(langile3)):
+for i in range(len(workers3)):
     if C[i,0] == 1:
-        langile3[i].komertziala  = 8
+        workers3[i].komertziala = 8
     if C[i,0] == 2:
-        langile3[i].logistika  = 8
+        workers3[i].logistika = 8
     if C[i,0] == 3:
-        langile3[i].programazioa  = 8
+        workers3[i].programazioa = 8
     if C[i,0] == 4:
-        langile3[i].mantentze  = 8
+        workers3[i].mantentze = 8
     if C[i,1] == 1:
-        langile3[i].komertziala  = 5
+        workers3[i].komertziala = 5
     if C[i,1] == 2:
-        langile3[i].logistika  = 5
+        workers3[i].logistika = 5
     if C[i,1] == 3:
-        langile3[i].programazioa  = 5
+        workers3[i].programazioa = 5
     if C[i,1] == 4:
-        langile3[i].mantentze  = 5
+        workers3[i].mantentze = 5
