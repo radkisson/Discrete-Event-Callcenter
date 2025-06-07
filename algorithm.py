@@ -35,7 +35,6 @@ def _service_level(calls: Sequence, *, threshold: int = 5) -> float:
             count += 1
     return count / len(calls) if calls else 0.0
 
-
 def _sla_compliance(calls: Sequence, sla: Sequence[float]) -> float:
     """Return share of ``calls`` solved within their SLA.
 
@@ -58,6 +57,7 @@ def _sla_compliance(calls: Sequence, sla: Sequence[float]) -> float:
         if c.handle_time + c.duration - c.time < sla[j]:
             count += 1
     return count / len(calls) if calls else 0.0
+
 
 
 def _queue_fraction(calls: Sequence) -> float:
