@@ -13,7 +13,7 @@ from typing import Iterable, List, Optional, Sequence, Tuple
 from filter import first_level, second_level, sort_by_work_time
 
 
-def _sl(calls: Sequence, *, threshold: int = 5) -> float:
+def _service_level(calls: Sequence, *, threshold: int = 5) -> float:
     """Return service level for ``calls``.
 
     Parameters
@@ -36,7 +36,7 @@ def _sl(calls: Sequence, *, threshold: int = 5) -> float:
     return count / len(calls) if calls else 0.0
 
 
-def _asa(calls: Sequence, sla: Sequence[float]) -> float:
+def _sla_compliance(calls: Sequence, sla: Sequence[float]) -> float:
     """Return share of ``calls`` solved within their SLA.
 
     Parameters
@@ -60,7 +60,7 @@ def _asa(calls: Sequence, sla: Sequence[float]) -> float:
     return count / len(calls) if calls else 0.0
 
 
-def _p_wait_queue(calls: Sequence) -> float:
+def _queue_fraction(calls: Sequence) -> float:
     """Return fraction of ``calls`` that had to wait in queue.
 
     Parameters
@@ -81,7 +81,7 @@ def _p_wait_queue(calls: Sequence) -> float:
     return count / len(calls) if calls else 0.0
 
 
-def _average_work_time(workers: Sequence) -> float:
+def _average_utilisation(workers: Sequence) -> float:
     """Return average worker utilisation.
 
     Parameters
@@ -122,9 +122,9 @@ def run_simulation(
     Returns
     -------
     tuple
-        ``(professionals, helpers, waiting, SL, ASA, p_wait, work_time)`` where
-        each value corresponds to one of the metrics computed during the
-        simulation.
+        ``(professionals, helpers, waiting, service_level, sla_compliance,
+        queue_fraction, average_utilisation)`` where each value corresponds to
+        one of the metrics computed during the simulation.
 
     Notes
     -----
@@ -192,10 +192,10 @@ def run_simulation(
         professionals,
         helpers,
         waiting,
-        _sl(calls),
-        _asa(calls, sla),
-        _p_wait_queue(calls),
-        _average_work_time(workers),
+        _service_level(calls),
+        _sla_compliance(calls, sla),
+        _queue_fraction(calls),
+        _average_utilisation(workers),
     )
 
 
