@@ -5,8 +5,65 @@ import os
 
 from dotenv import load_dotenv
 
-import algoritmo
+import algorithm
 import stats
+
+
+METRIC_LABELS = [
+    "Professionals",
+    "Helpers",
+    "Waiting",
+    "SL",
+    "ASA",
+    "wait",
+    "work_done",
+]
+
+
+def _load_workers_from_env(env_file: str):
+    """Return custom workers defined by environment variables."""
+
+    load_dotenv(dotenv_path=os.path.join(os.getcwd(), env_file))
+    team_size = [
+        int(os.getenv("SALES_WORKERS", 0)),
+        int(os.getenv("LOGISTICS_WORKERS", 0)),
+        int(os.getenv("PROGRAMMING_WORKERS", 0)),
+        int(os.getenv("MAINTENANCE_WORKERS", 0)),
+    ]
+    quality = [
+        int(os.getenv("SALES_QUALITY", 8)),
+        int(os.getenv("LOGISTICS_QUALITY", 8)),
+        int(os.getenv("PROGRAMMING_QUALITY", 8)),
+        int(os.getenv("MAINTENANCE_QUALITY", 8)),
+    ]
+    from worker import build_worker_list
+    import data
+
+    return build_worker_list(data.A, team_size, quality)
+
+
+def _write_results(runs: int, workers=None, filename: str = "results.txt") -> None:
+    """Run the simulation ``runs`` times and store metrics in ``filename``."""
+
+    with open(filename, "w") as fh:
+        for _ in range(runs):
+            result = algorithm.run_simulation(workers=workers)
+            for value in result:
+                fh.write(f"{value}\n")
+
+
+def _print_block(title: str, metrics: tuple) -> None:
+    print(f"========={title}==============")
+    for label, value in zip(METRIC_LABELS, metrics):
+        print(label)
+        print(value)
+
+
+def _show_stats(runs: int) -> None:
+    print(f"========= N = {runs} =========")
+    _print_block("LOW", stats.low(runs))
+    _print_block("MID", stats.med(runs))
+    _print_block("HI", stats.hi(runs))
 
 
 def main():
@@ -36,84 +93,14 @@ def main():
     n = 10
 
     if args.simulate:
-        custom_workers = None
+        workers = None
         if args.workers_from_env:
-            load_dotenv(dotenv_path=os.path.join(os.getcwd(), args.env_file))
-            team_size = [
-                int(os.getenv("SALES_WORKERS", 0)),
-                int(os.getenv("LOGISTICS_WORKERS", 0)),
-                int(os.getenv("PROGRAMMING_WORKERS", 0)),
-                int(os.getenv("MAINTENANCE_WORKERS", 0)),
-            ]
-            quality = [
-                int(os.getenv("SALES_QUALITY", 8)),
-                int(os.getenv("LOGISTICS_QUALITY", 8)),
-                int(os.getenv("PROGRAMMING_QUALITY", 8)),
-                int(os.getenv("MAINTENANCE_QUALITY", 8)),
-            ]
-            from worker import build_worker_list
-            import data
+            workers = _load_workers_from_env(args.env_file)
 
-            custom_workers = build_worker_list(data.A, team_size, quality)
-
-        with open("results.txt", "w") as f:
-            for _ in range(n):
-                result = algoritmo.run_simulation(workers=custom_workers)
-                for value in result:
-                    f.write(f"{value}\n")
+        _write_results(n, workers)
 
     elif args.stats:
-        professionals, helpers, waiting, SL, ASA, wait, work_done = stats.low(n)
-        print("========= N = " + str(n) + " =========")
-        print("=========LOW==============")
-        print("Professionals")
-        print(professionals)
-        print("Helpers")
-        print(helpers)
-        print("Waiting")
-        print(waiting)
-        print("SL")
-        print(SL)
-        print("ASA")
-        print(ASA)
-        print("wait")
-        print(wait)
-        print("work_done")
-        print(work_done)
-
-        professionals, helpers, waiting, SL, ASA, wait, work_done = stats.med(n)
-        print("=========MID==============")
-        print("Professionals")
-        print(professionals)
-        print("Helpers")
-        print(helpers)
-        print("Waiting")
-        print(waiting)
-        print("SL")
-        print(SL)
-        print("ASA")
-        print(ASA)
-        print("wait")
-        print(wait)
-        print("work_done")
-        print(work_done)
-
-        professionals, helpers, waiting, SL, ASA, wait, work_done = stats.hi(n)
-        print("=========HI==============")
-        print("Professionals")
-        print(professionals)
-        print("Helpers")
-        print(helpers)
-        print("Waiting")
-        print(waiting)
-        print("SL")
-        print(SL)
-        print("ASA")
-        print(ASA)
-        print("wait")
-        print(wait)
-        print("work_done")
-        print(work_done)
+        _show_stats(n)
 
 
 if __name__ == "__main__":

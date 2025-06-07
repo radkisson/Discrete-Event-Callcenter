@@ -1,6 +1,6 @@
 import math
 
-from algoritmo import run_simulation
+from algorithm import run_simulation
 
 class DummyCall:
     def __init__(self, time, duration, department, sla):
