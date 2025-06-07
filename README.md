@@ -6,6 +6,14 @@ This repository presents a small-scale discrete-event simulation of a multi-depa
 
 For each department, incoming calls follow a Poisson arrival process and the handling time of every call is drawn from an exponential distribution. This configuration corresponds to the well-studied $M/M/c$ queue with a finite team of agents. A Service Level Agreement (SLA) specifies the maximum waiting time permitted before service. The simulator records waiting times and utilisation so that the impact of different load scenarios can be evaluated.
 
+## Simulation Details
+
+The incoming call stream is produced in `data.py` by drawing inter-arrival times from `numpy.random.exponential`, yielding a separate Poisson process for each department. Call durations are sampled from another exponential distribution whose mean reflects the expected workload. These samples become `Call` objects sorted by arrival time.
+
+`worker.py` creates `WorkerType` agents from predefined skill matrices. Specialists carry a skill level of 8 while helpers range from 5 to 7. The event loop in `algorithm.run_simulation` iterates over the calls, first looking for an idle specialist in the appropriate department and then falling back to helpers. If no worker is available the call waits in queue until the next agent finishes.
+
+Throughout the run the simulator records waiting times, utilisation and SLA compliance. Functions in `stats.py` average these results across multiple iterations.
+
 ## Repository Layout
 
 * `data.py` generates arrival patterns and call durations using NumPy routines.
