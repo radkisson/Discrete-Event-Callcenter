@@ -13,10 +13,10 @@ METRIC_LABELS = [
     "Professionals",
     "Helpers",
     "Waiting",
-    "SL",
-    "ASA",
-    "wait",
-    "work_done",
+    "Service Level",
+    "SLA Compliance",
+    "Queue Share",
+    "Utilisation",
 ]
 
 

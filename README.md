@@ -56,6 +56,11 @@ The following variables are recognised:
 * `MAINTENANCE_WORKERS`
 * `MAINTENANCE_QUALITY`
 
+Quality values express the primary skill level for each department on a
+scale from 1 (novice) to 10 (expert). A level of 8 or higher designates a
+specialist worker. When a specialist assists another department their skill
+in that area defaults to 5.
+
 An example configuration is provided in [`.env.example`](./.env.example).
 
 ## Analysing Results

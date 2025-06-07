@@ -50,10 +50,10 @@ def test_single_call():
         1,        # professionals
         0,        # helpers
         0,        # waiting
-        1.0,      # SL
-        1.0,      # ASA
-        0.0,      # p_wait
-        5 / (8 * 60),  # average work time
+        1.0,      # service level
+        1.0,      # SLA compliance
+        0.0,      # queue share
+        5 / (8 * 60),  # average utilisation
     )
 
     assert len(result) == len(expected)
