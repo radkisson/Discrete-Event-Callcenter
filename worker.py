@@ -21,6 +21,12 @@ class Agent:
         while lower values denote diminishing ability.
     sla : float
         Service level agreement for this worker's main department.
+
+    Notes
+    -----
+    The simulation uses these skill values only to prioritise agent
+    selection. Specialists are always considered before helpers but the
+    skill level does not alter call duration or the SLA itself.
     """
 
     def __init__(self, department, number, sales, logistics, programming, maintenance, sla):

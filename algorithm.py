@@ -199,6 +199,59 @@ def run_simulation(
     )
 
 
+def run_simulation_detailed(
+    calls: Optional[Iterable] = None,
+    agents: Optional[Iterable] = None,
+    sla: Optional[Sequence[float]] = None,
+) -> Tuple[int, int, int, float, float, float, float, float, float]:
+    """Run the simulation and compute additional skill metrics.
+
+    The first seven elements of the returned tuple match
+    :func:`run_simulation`.  Two extra values provide the average waiting
+    time for calls handled by specialists and helpers respectively.  A
+    specialist is a worker whose skill is ``8`` for the department of the
+    call.  Helpers have a skill between ``5`` and ``7``.
+    """
+
+    # keep references so we can inspect the schedules after running
+    if calls is None or agents is None or sla is None:
+        import importlib
+        import data as data_mod
+        import worker as worker_mod
+        import call as call_mod
+
+        data_mod = importlib.reload(data_mod)
+        worker_mod = importlib.reload(worker_mod)
+        call_mod = importlib.reload(call_mod)
+
+        if calls is None:
+            calls = call_mod.calls
+        if agents is None:
+            agents = worker_mod.agents
+        if sla is None:
+            sla = data_mod.tSLA
+
+    calls = list(calls)
+    agents = list(agents)
+
+    result = run_simulation(calls, agents, sla)
+
+    specialist_wait = []
+    helper_wait = []
+    for agent in agents:
+        for call_obj in agent.schedule:
+            skill = agent.skill_for(call_obj.department + 1)
+            if skill >= 8:
+                specialist_wait.append(call_obj.wait_time())
+            elif 5 <= skill <= 7:
+                helper_wait.append(call_obj.wait_time())
+
+    avg_spec = sum(specialist_wait) / len(specialist_wait) if specialist_wait else 0.0
+    avg_help = sum(helper_wait) / len(helper_wait) if helper_wait else 0.0
+
+    return result + (avg_spec, avg_help)
+
+
 if __name__ == "__main__":
     for value in run_simulation():
         print(value)
