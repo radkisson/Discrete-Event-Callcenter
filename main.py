@@ -20,8 +20,8 @@ METRIC_LABELS = [
 ]
 
 
-def _load_workers_from_env(env_file: str):
-    """Return custom workers defined by environment variables."""
+def _load_agents_from_env(env_file: str):
+    """Return custom agents defined by environment variables."""
 
     load_dotenv(dotenv_path=os.path.join(os.getcwd(), env_file))
     team_size = [
@@ -36,18 +36,18 @@ def _load_workers_from_env(env_file: str):
         int(os.getenv("PROGRAMMING_QUALITY", 8)),
         int(os.getenv("MAINTENANCE_QUALITY", 8)),
     ]
-    from worker import build_worker_list
+    from worker import build_agent_list
     import data
 
-    return build_worker_list(data.A, team_size, quality)
+    return build_agent_list(data.A, team_size, quality)
 
 
-def _write_results(runs: int, workers=None, filename: str = "results.txt") -> None:
+def _write_results(runs: int, agents=None, filename: str = "results.txt") -> None:
     """Run the simulation ``runs`` times and store metrics in ``filename``."""
 
     with open(filename, "w") as fh:
         for _ in range(runs):
-            result = algorithm.run_simulation(workers=workers)
+            result = algorithm.run_simulation(agents=agents)
             for value in result:
                 fh.write(f"{value}\n")
 
@@ -79,25 +79,25 @@ def main():
     mode.add_argument("--simulate", action="store_true", help="Run the simulation")
     mode.add_argument("--stats", action="store_true", help="Show statistics")
     parser.add_argument(
-        "--workers-from-env",
+        "--agents-from-env",
         action="store_true",
-        help="Load worker counts from environment variables",
+        help="Load agent counts from environment variables",
     )
     parser.add_argument(
         "--env-file",
         default=".env",
-        help="Path to environment file used with --workers-from-env",
+        help="Path to environment file used with --agents-from-env",
     )
     args = parser.parse_args()
 
     n = 10
 
     if args.simulate:
-        workers = None
-        if args.workers_from_env:
-            workers = _load_workers_from_env(args.env_file)
+        agents = None
+        if args.agents_from_env:
+            agents = _load_agents_from_env(args.env_file)
 
-        _write_results(n, workers)
+        _write_results(n, agents)
 
     elif args.stats:
         _show_stats(n)
