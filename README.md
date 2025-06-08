@@ -12,6 +12,15 @@ The incoming call stream is produced in `data.py` by drawing inter-arrival times
 
 `worker.py` creates `Agent` objects from predefined skill matrices. Specialists carry a skill level of 8 while helpers range from 5 to 7. The event loop in `algorithm.run_simulation` iterates over the calls, first looking for an idle specialist in the appropriate department and then falling back to helpers. If no agent is available the call waits in queue until the next agent finishes.
 
+## Skill Model
+
+Agent skills only influence the order in which workers are selected for a call.
+Specialists are always tried first within their department while helpers serve
+as a secondary pool.  Call duration and SLA thresholds remain unchanged by the
+skill level itself.  To study how this distribution affects performance the
+function `algorithm.run_simulation_detailed` returns the average waiting time for
+calls handled by specialists and helpers separately.
+
 Throughout the run the simulator records waiting times, utilisation and SLA compliance. Functions in `stats.py` average these results across multiple iterations.
 
 ## Repository Layout
@@ -40,6 +49,10 @@ python main.py --simulate
 ```
 
 The command above overwrites any existing `results.txt` in the working directory.
+For a more granular view run ``algorithm.run_simulation_detailed()`` from a
+Python shell. This variant includes the average waiting time for calls handled
+by specialists and helpers, allowing you to gauge how the skill distribution
+impacts the queue.
 
 To read agent counts from environment variables defined in a `.env` file use:
 
