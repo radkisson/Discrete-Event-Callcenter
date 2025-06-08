@@ -31,6 +31,26 @@ Variable names originate from an earlier prototype that used Euskera terms. They
 * Optional: set agent counts and quality in a `.env` file when using `--agents-from-env`
   (use `--env-file PATH` to load a different file)
 
+## Command Line Interface
+
+Run `python main.py --help` to display all available options:
+
+```text
+usage: main.py [-h] (--simulate | --stats) [--agents-from-env]
+               [--env-file ENV_FILE]
+
+options:
+  -h, --help           show this help message and exit
+  --simulate           Run the simulation
+  --stats              Show statistics
+  --agents-from-env    Load agent counts from environment variables
+  --env-file ENV_FILE  Path to environment file used with --agents-from-env
+```
+
+`--simulate` and `--stats` are mutually exclusive. Use `--simulate` to
+generate a `results.txt` file. To load agent counts from environment
+variables, add `--agents-from-env` and optionally provide `--env-file`.
+
 ## Running the Simulation
 
 To generate a `results.txt` file containing statistics for ten simulation runs:
