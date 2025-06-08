@@ -42,5 +42,11 @@ class StatsCompatibilityTests(unittest.TestCase):
             self.assertAlmostEqual(a, b)
 
 
+class ComputeStatsValidationTests(unittest.TestCase):
+    def test_invalid_length_raises(self):
+        with self.assertRaises(ValueError):
+            stats._compute_stats([1.0] * 20, 0)
+
+
 if __name__ == '__main__':
     unittest.main()
