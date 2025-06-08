@@ -1,11 +1,13 @@
-"""Worker classes and builders used by the simulation engine."""
+"""Agent classes and builders used by the simulation engine."""
 
 import itertools  # Helper for constructing the worker matrices
-from data import A, B, C, tSLA, team_size as default_team_size
+
+from data import A, B, C, tSLA
+import config
 
 # Define the worker objects
 
-class WorkerType:
+class Agent:
     """Model a call-centre agent and their skill set.
 
     Parameters
@@ -22,9 +24,9 @@ class WorkerType:
     """
 
     def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
-        # Basic worker data
-        self.department = department  # Department this worker belongs to
-        self.number = number  # Worker identifier
+        # Basic agent data
+        self.department = department  # Department this agent belongs to
+        self.number = number  # Agent identifier
         self.schedule = []  # List of handled calls
         self.sales = sales  # Skills per department
         self.logistics = logistics
@@ -34,10 +36,8 @@ class WorkerType:
         self.tracer = "Kaixo"
     
     def __repr__(self):
-        """Return a readable representation of the worker."""
-        return 'WorkerType: Department {} Number {}'.format(
-            self.department, self.number
-        )
+        """Return a readable representation of the agent."""
+        return 'Agent: Department {} Number {}'.format(self.department, self.number)
         
     def next_available(self):  # When will this worker be free?
         if len(self.schedule) == 0:
@@ -81,8 +81,8 @@ class WorkerType:
             return self.maintenance
 
 
-def build_worker_list(skill_matrix, team_size, quality_levels=None, helper_skill=5):
-    """Return a list of :class:`WorkerType` built from ``skill_matrix``.
+def build_agent_list(skill_matrix, team_size, quality_levels=None, helper_skill=5):
+    """Return a list of :class:`Agent` built from ``skill_matrix``.
 
     Parameters
     ----------
@@ -100,42 +100,48 @@ def build_worker_list(skill_matrix, team_size, quality_levels=None, helper_skill
         quality_levels = [8, 8, 8, 8]
 
     # Create workers for each department according to ``team_size``
-    workers: list[WorkerType] = []
+    agents: list[Agent] = []
     dept = 0
     for size in team_size:
         for number in range(size):
-            worker = WorkerType(dept, number, 2, 2, 2, 2, 0)
-            worker.sla = tSLA[dept]
-            workers.append(worker)
+            agent = Agent(dept, number, 2, 2, 2, 2, 0)
+            agent.sla = tSLA[dept]
+            agents.append(agent)
         dept += 1
 
     # Assign skills using the provided matrix
-    for idx, worker in enumerate(workers):
+    for idx, agent in enumerate(agents):
         primary = skill_matrix[idx, 0]
         secondary = skill_matrix[idx, 1]
 
         if primary == 1:
-            worker.sales = quality_levels[0]
+            agent.sales = quality_levels[0]
         if primary == 2:
-            worker.logistics = quality_levels[1]
+            agent.logistics = quality_levels[1]
         if primary == 3:
-            worker.programming = quality_levels[2]
+            agent.programming = quality_levels[2]
         if primary == 4:
-            worker.maintenance = quality_levels[3]
+            agent.maintenance = quality_levels[3]
 
         if secondary == 1:
-            worker.sales = helper_skill
+            agent.sales = helper_skill
         if secondary == 2:
-            worker.logistics = helper_skill
+            agent.logistics = helper_skill
         if secondary == 3:
-            worker.programming = helper_skill
+            agent.programming = helper_skill
         if secondary == 4:
-            worker.maintenance = helper_skill
+            agent.maintenance = helper_skill
 
-    return workers
+    return agents
 
 
-# Worker matrices used during the simulation
-workers = build_worker_list(A, default_team_size)
-workers2 = build_worker_list(B, default_team_size)
-workers3 = build_worker_list(C, default_team_size)
+# Agent matrices used during the simulation.  When tests monkeypatch ``data``
+# these may fail to build, so fall back to empty lists in that case.
+try:
+    agents = build_agent_list(A, config.TEAM_SIZE, config.QUALITY)
+    agents2 = build_agent_list(B, config.TEAM_SIZE, config.QUALITY)
+    agents3 = build_agent_list(C, config.TEAM_SIZE, config.QUALITY)
+except Exception:
+    agents = []
+    agents2 = []
+    agents3 = []

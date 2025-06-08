@@ -9,7 +9,7 @@ import importlib
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_build_worker_list_respects_env(monkeypatch):
+def test_build_agent_list_respects_env(monkeypatch):
     dummy = types.SimpleNamespace(
         tSLA=[0, 0, 0, 0],
         team_size=[],
@@ -26,14 +26,14 @@ def test_build_worker_list_respects_env(monkeypatch):
 
     team_size = [1, 2, 3, 4]
     matrix = np.zeros((sum(team_size), 2))
-    workers = worker.build_worker_list(matrix, team_size)
+    agents = worker.build_agent_list(matrix, team_size)
     counts = [0, 0, 0, 0]
-    for w in workers:
+    for w in agents:
         counts[w.department] += 1
     assert counts == team_size
 
 
-def test_build_worker_list_respects_quality(monkeypatch):
+def test_build_agent_list_respects_quality(monkeypatch):
     dummy = types.SimpleNamespace(
         tSLA=[0, 0, 0, 0],
         team_size=[],
@@ -51,8 +51,8 @@ def test_build_worker_list_respects_quality(monkeypatch):
     team_size = [1, 1, 1, 1]
     matrix = np.array([[1, 0], [2, 0], [3, 0], [4, 0]])
     quality = [9, 7, 5, 6]
-    workers = worker.build_worker_list(matrix, team_size, quality)
-    skills = [w.skill_for(i + 1) for i, w in enumerate(workers)]
+    agents = worker.build_agent_list(matrix, team_size, quality)
+    skills = [w.skill_for(i + 1) for i, w in enumerate(agents)]
     assert skills == quality
 
 
@@ -69,7 +69,7 @@ def test_cli_simulation_from_env(tmp_path):
             sys.executable,
             str(ROOT / 'main.py'),
             '--simulate',
-            '--workers-from-env',
+            '--agents-from-env',
             '--env-file',
             str(env),
         ],
@@ -88,7 +88,7 @@ def test_cli_simulation_from_default_env(tmp_path):
         'MAINTENANCE_WORKERS=2\nMAINTENANCE_QUALITY=6\n'
     )
     result = subprocess.run(
-        [sys.executable, str(ROOT / 'main.py'), '--simulate', '--workers-from-env'],
+        [sys.executable, str(ROOT / 'main.py'), '--simulate', '--agents-from-env'],
         cwd=tmp_path,
         check=True,
     )

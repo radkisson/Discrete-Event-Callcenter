@@ -10,7 +10,7 @@ For each department, incoming calls follow a Poisson arrival process and the han
 
 The incoming call stream is produced in `data.py` by drawing inter-arrival times from `numpy.random.exponential`, yielding a separate Poisson process for each department. Call durations are sampled from another exponential distribution whose mean reflects the expected workload. These samples become `Call` objects sorted by arrival time.
 
-`worker.py` creates `WorkerType` agents from predefined skill matrices. Specialists carry a skill level of 8 while helpers range from 5 to 7. The event loop in `algorithm.run_simulation` iterates over the calls, first looking for an idle specialist in the appropriate department and then falling back to helpers. If no worker is available the call waits in queue until the next agent finishes.
+`worker.py` creates `Agent` objects from predefined skill matrices. Specialists carry a skill level of 8 while helpers range from 5 to 7. The event loop in `algorithm.run_simulation` iterates over the calls, first looking for an idle specialist in the appropriate department and then falling back to helpers. If no agent is available the call waits in queue until the next agent finishes.
 
 Throughout the run the simulator records waiting times, utilisation and SLA compliance. Functions in `stats.py` average these results across multiple iterations.
 
@@ -28,7 +28,7 @@ Variable names originate from an earlier prototype that used Euskera terms. They
 
 * Python 3.8 or higher
 * Install the dependencies with `pip install -r requirements.txt`
-* Optional: set worker counts and quality in a `.env` file when using `--workers-from-env`
+* Optional: set agent counts and quality in a `.env` file when using `--agents-from-env`
   (use `--env-file PATH` to load a different file)
 
 ## Running the Simulation
@@ -41,16 +41,16 @@ python main.py --simulate
 
 The command above overwrites any existing `results.txt` in the working directory.
 
-To read worker counts from environment variables defined in a `.env` file use:
+To read agent counts from environment variables defined in a `.env` file use:
 
 ```bash
-python main.py --simulate --workers-from-env
+python main.py --simulate --agents-from-env
 ```
 
 To load settings from a different file pass the path using `--env-file`:
 
 ```bash
-python main.py --simulate --workers-from-env --env-file custom.env
+python main.py --simulate --agents-from-env --env-file custom.env
 ```
 
 The following variables are recognised:
@@ -66,7 +66,7 @@ The following variables are recognised:
 
 Quality values express the primary skill level for each department on a
 scale from 1 (novice) to 10 (expert). A level of 8 or higher designates a
-specialist worker. When a specialist assists another department their skill
+specialist agent. When a specialist assists another department their skill
 in that area defaults to 5.
 
 An example configuration is provided in [`.env.example`](./.env.example).
