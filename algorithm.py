@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from typing import Iterable, List, Optional, Sequence, Tuple
 
+from department import Department
+
 from filter import first_level, second_level, sort_by_work_time
 
 
@@ -160,7 +162,7 @@ def run_simulation(
     waiting = 0
 
     for call_item in calls:
-        call_type = call_item.department + 1  # departments are 1-indexed
+        call_type = int(call_item.department) + 1  # departments are 1-indexed
         primary_workers = sort_by_work_time(first_level(agents, call_type))
         secondary_workers = sort_by_work_time(second_level(agents, call_type))
 
@@ -240,7 +242,7 @@ def run_simulation_detailed(
     helper_wait = []
     for agent in agents:
         for call_obj in agent.schedule:
-            skill = agent.skill_for(call_obj.department + 1)
+            skill = agent.skill_for(int(call_obj.department) + 1)
             if skill >= 8:
                 specialist_wait.append(call_obj.wait_time())
             elif 5 <= skill <= 7:

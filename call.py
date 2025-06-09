@@ -1,6 +1,9 @@
 """Wrappers for incoming call data used by the simulator."""
 
+from typing import Union
+
 from data import call_input_list
+from department import Department
 
 class Call:
     """Representation of a single call arriving to the centre.
@@ -11,7 +14,7 @@ class Call:
         Minute when the call enters the system.
     duration : float
         Expected handling time in minutes.
-    department : int
+    department : Department | int
         Identifier of the department that should serve the call.
     sla : float
         Service Level Agreement (maximum waiting time allowed).
@@ -22,7 +25,7 @@ class Call:
         When the call arrived to the system.
     duration : float
         Estimated handling time for the call.
-    department : int
+    department : Department
         Department responsible for serving the call.
     sla : float
         SLA value for the department.
@@ -30,13 +33,13 @@ class Call:
         When the call was actually answered. Set by the simulator.
     """
 
-    def __init__(self, time, duration, department, sla):
+    def __init__(self, time, duration, department: Union[int, Department], sla):
         # minute when the call arrives
         self.time = time
         # duration of the call in minutes
         self.duration = duration
         # department that should handle the call
-        self.department = department
+        self.department = Department(department)
         # service level agreement for the call
         self.sla = sla
         # minute when the call is actually handled
@@ -64,7 +67,12 @@ class Call:
 
 # Build the list of calls using the generated input matrix
 calls = [
-    Call(call_input_list[i][0][0], call_input_list[i][0][1],
-         call_input_list[i][0][2], call_input_list[i][0][3])
+    Call(
+        call_input_list[i][0][0],
+        call_input_list[i][0][1],
+        Department(call_input_list[i][0][2]),
+        call_input_list[i][0][3],
+    )
     for i in range(len(call_input_list))
 ]
+

@@ -3,6 +3,7 @@
 import itertools  # Helper for constructing the worker matrices
 
 from data import A, B, C, tSLA
+from department import Department
 import config
 
 # Define the worker objects
@@ -12,7 +13,7 @@ class Agent:
 
     Parameters
     ----------
-    department : int
+    department : Department | int
         Department identifier this worker belongs to.
     number : int
         Unique number for the worker inside the department.
@@ -29,9 +30,9 @@ class Agent:
     skill level does not alter call duration or the SLA itself.
     """
 
-    def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
+    def __init__(self, department: Department | int, number, sales, logistics, programming, maintenance, sla):
         # Basic agent data
-        self.department = department  # Department this agent belongs to
+        self.department = Department(department)  # Department this agent belongs to
         self.number = number  # Agent identifier
         self.schedule = []  # List of handled calls
         self.sales = sales  # Skills per department
@@ -76,7 +77,9 @@ class Agent:
             time = time + self.schedule[i].duration
         return time
     
-    def skill_for(self, number):  # Return the skill value for the given department
+    def skill_for(self, number: int | Department):  # Return the skill value for the given department
+        if isinstance(number, Department):
+            number = number.value + 1
         if number == 1:
             return self.sales
         if number == 2:
@@ -107,36 +110,39 @@ def build_agent_list(skill_matrix, team_size, quality_levels=None, helper_skill=
 
     # Create workers for each department according to ``team_size``
     agents: list[Agent] = []
-    dept = 0
-    for size in team_size:
+    for dept_value, size in enumerate(team_size):
+        dept = Department(dept_value)
         for number in range(size):
             agent = Agent(dept, number, 2, 2, 2, 2, 0)
-            agent.sla = tSLA[dept]
+            agent.sla = tSLA[dept.value]
             agents.append(agent)
-        dept += 1
 
     # Assign skills using the provided matrix
     for idx, agent in enumerate(agents):
         primary = skill_matrix[idx, 0]
         secondary = skill_matrix[idx, 1]
 
-        if primary == 1:
-            agent.sales = quality_levels[0]
-        if primary == 2:
-            agent.logistics = quality_levels[1]
-        if primary == 3:
-            agent.programming = quality_levels[2]
-        if primary == 4:
-            agent.maintenance = quality_levels[3]
+        if primary:
+            dept_enum = Department(primary - 1)
+            if dept_enum is Department.SALES:
+                agent.sales = quality_levels[Department.SALES.value]
+            elif dept_enum is Department.LOGISTICS:
+                agent.logistics = quality_levels[Department.LOGISTICS.value]
+            elif dept_enum is Department.PROGRAMMING:
+                agent.programming = quality_levels[Department.PROGRAMMING.value]
+            elif dept_enum is Department.MAINTENANCE:
+                agent.maintenance = quality_levels[Department.MAINTENANCE.value]
 
-        if secondary == 1:
-            agent.sales = helper_skill
-        if secondary == 2:
-            agent.logistics = helper_skill
-        if secondary == 3:
-            agent.programming = helper_skill
-        if secondary == 4:
-            agent.maintenance = helper_skill
+        if secondary:
+            dept_enum = Department(secondary - 1)
+            if dept_enum is Department.SALES:
+                agent.sales = helper_skill
+            elif dept_enum is Department.LOGISTICS:
+                agent.logistics = helper_skill
+            elif dept_enum is Department.PROGRAMMING:
+                agent.programming = helper_skill
+            elif dept_enum is Department.MAINTENANCE:
+                agent.maintenance = helper_skill
 
     return agents
 

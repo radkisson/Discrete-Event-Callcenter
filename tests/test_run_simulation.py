@@ -1,9 +1,10 @@
 import math
 
 from algorithm import run_simulation
+from department import Department
 
 class DummyCall:
-    def __init__(self, time, duration, department, sla):
+    def __init__(self, time, duration, department: Department, sla):
         self.time = time
         self.duration = duration
         self.department = department
@@ -17,14 +18,14 @@ class DummyCall:
         return self.wait_time()
 
 class DummyWorker:
-    def __init__(self, department, skill):
+    def __init__(self, department: Department, skill):
         self.department = department
         self.number = 0
         self.schedule = []
         self.skill = skill
 
     def skill_for(self, number):
-        return self.skill if number - 1 == self.department else 0
+        return self.skill if number - 1 == int(self.department) else 0
 
     def work_time(self):
         return sum(c.duration for c in self.schedule)
@@ -40,8 +41,8 @@ class DummyWorker:
 
 
 def test_single_call():
-    calls = [DummyCall(0, 5, 0, 10)]
-    workers = [DummyWorker(0, 8)]
+    calls = [DummyCall(0, 5, Department.SALES, 10)]
+    workers = [DummyWorker(Department.SALES, 8)]
     sla = [10]
 
     result = run_simulation(calls, workers, sla)
