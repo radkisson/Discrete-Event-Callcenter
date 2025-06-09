@@ -21,11 +21,12 @@ sys.modules['data'] = types.SimpleNamespace(
 
 from call import Call
 from worker import Agent
+from department import Department
 
 
 def test_next_available_single_call():
-    worker = Agent(0, 0, 0, 0, 0, 0, 0)
-    call = Call(0, 5, 0, 10)
+    worker = Agent(Department.SALES, 0, 0, 0, 0, 0, 0)
+    call = Call(0, 5, Department.SALES, 10)
     call.handle_time = 3
     worker.schedule.append(call)
     assert worker.next_available() == 8

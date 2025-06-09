@@ -1,4 +1,8 @@
+import os
+import sys
 import math
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from algorithm import (
     _service_level,
@@ -7,10 +11,11 @@ from algorithm import (
     _average_utilisation,
     run_simulation_detailed,
 )
+from department import Department
 
 
 class DummyCall:
-    def __init__(self, time, duration, department, sla, handle_time=None):
+    def __init__(self, time, duration, department: Department, sla, handle_time=None):
         self.time = time
         self.duration = duration
         self.department = department
@@ -25,14 +30,14 @@ class DummyCall:
 
 
 class DummyWorker:
-    def __init__(self, department, skill):
+    def __init__(self, department: Department, skill):
         self.department = department
         self.number = 0
         self.schedule = []
         self.skill = skill
 
     def skill_for(self, number):
-        return self.skill if number - 1 == self.department else 0
+        return self.skill if number - 1 == int(self.department) else 0
 
     def work_time(self):
         return sum(c.duration for c in self.schedule)
@@ -49,9 +54,9 @@ class DummyWorker:
 
 def test_service_level_threshold():
     calls = [
-        DummyCall(0, 1, 0, 10, 0),
-        DummyCall(0, 1, 0, 10, 6),
-        DummyCall(0, 1, 0, 10, 4),
+        DummyCall(0, 1, Department.SALES, 10, 0),
+        DummyCall(0, 1, Department.SALES, 10, 6),
+        DummyCall(0, 1, Department.SALES, 10, 4),
     ]
     result = _service_level(calls, threshold=5)
     assert math.isclose(result, 2 / 3)
@@ -59,8 +64,8 @@ def test_service_level_threshold():
 
 def test_sla_compliance():
     calls = [
-        DummyCall(0, 5, 0, 10, 0),
-        DummyCall(0, 8, 0, 10, 4),
+        DummyCall(0, 5, Department.SALES, 10, 0),
+        DummyCall(0, 8, Department.SALES, 10, 4),
     ]
     sla = [10]
     result = _sla_compliance(calls, sla)
@@ -69,9 +74,9 @@ def test_sla_compliance():
 
 def test_queue_fraction():
     calls = [
-        DummyCall(0, 1, 0, 10, 0),
-        DummyCall(0, 1, 0, 10, 1),
-        DummyCall(0, 1, 0, 10, 2),
+        DummyCall(0, 1, Department.SALES, 10, 0),
+        DummyCall(0, 1, Department.SALES, 10, 1),
+        DummyCall(0, 1, Department.SALES, 10, 2),
     ]
     result = _queue_fraction(calls)
     assert math.isclose(result, 2 / 3)
@@ -93,11 +98,11 @@ def test_average_utilisation():
 
 def test_run_simulation_detailed_waits():
     calls = [
-        DummyCall(0, 5, 0, 10),
-        DummyCall(1, 3, 0, 10),
-        DummyCall(2, 4, 0, 10),
+        DummyCall(0, 5, Department.SALES, 10),
+        DummyCall(1, 3, Department.SALES, 10),
+        DummyCall(2, 4, Department.SALES, 10),
     ]
-    workers = [DummyWorker(0, 8), DummyWorker(0, 6)]
+    workers = [DummyWorker(Department.SALES, 8), DummyWorker(Department.SALES, 6)]
     sla = [10]
 
     result = run_simulation_detailed(calls, workers, sla)
