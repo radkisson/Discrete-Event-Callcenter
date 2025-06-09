@@ -5,6 +5,8 @@ from pathlib import Path
 import types
 import importlib
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 ROOT = Path(__file__).resolve().parents[1]
 

@@ -1,7 +1,10 @@
 """Wrappers for incoming call data used by the simulator."""
 
+from dataclasses import dataclass, field
+
 from data import call_input_list
 
+@dataclass
 class Call:
     """Representation of a single call arriving to the centre.
 
@@ -30,17 +33,11 @@ class Call:
         When the call was actually answered. Set by the simulator.
     """
 
-    def __init__(self, time, duration, department, sla):
-        # minute when the call arrives
-        self.time = time
-        # duration of the call in minutes
-        self.duration = duration
-        # department that should handle the call
-        self.department = department
-        # service level agreement for the call
-        self.sla = sla
-        # minute when the call is actually handled
-        self.handle_time = 0
+    time: float
+    duration: float
+    department: int
+    sla: float
+    handle_time: float = field(default=0)
 
     def wait_time(self):
         """Return the time this call waited in queue.

@@ -1,12 +1,14 @@
 """Agent classes and builders used by the simulation engine."""
 
 import itertools  # Helper for constructing the worker matrices
+from dataclasses import dataclass, field
 
 from data import A, B, C, tSLA
 import config
 
 # Define the worker objects
 
+@dataclass
 class Agent:
     """Model a call-centre agent and their skill set.
 
@@ -29,17 +31,15 @@ class Agent:
     skill level does not alter call duration or the SLA itself.
     """
 
-    def __init__(self, department, number, sales, logistics, programming, maintenance, sla):
-        # Basic agent data
-        self.department = department  # Department this agent belongs to
-        self.number = number  # Agent identifier
-        self.schedule = []  # List of handled calls
-        self.sales = sales  # Skills per department
-        self.logistics = logistics
-        self.programming = programming
-        self.maintenance = maintenance
-        self.sla = sla  # SLA for the department
-        self.tracer = "Kaixo"
+    department: int
+    number: int
+    sales: int
+    logistics: int
+    programming: int
+    maintenance: int
+    sla: float
+    schedule: list = field(default_factory=list)
+    tracer: str = "Kaixo"
     
     def __repr__(self):
         """Return a readable representation of the agent."""
