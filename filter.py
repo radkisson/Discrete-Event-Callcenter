@@ -52,16 +52,7 @@ def first_level(worker_list: List[WorkerProtocol], department: int) -> List[Work
         sorted from most to least busy.
     """
     ordered = workers_by_skill(worker_list, department)
-    ordered.reverse()
-    length = len(ordered)
-    count = 0
-    for i in range(length):
-        if ordered[i].skill_for(department) == 8:  # Skill matrix value 8
-            count += 1
-    for _ in range(length - count):
-        ordered.pop(0)
-    ordered.reverse()
-    return ordered
+    return [w for w in ordered if w.skill_for(department) == 8]
 
 
 def second_level(worker_list: List[WorkerProtocol], department: int) -> List[WorkerProtocol]:
@@ -81,19 +72,7 @@ def second_level(worker_list: List[WorkerProtocol], department: int) -> List[Wor
         department sorted from most to least busy.
     """
     ordered = workers_by_skill(worker_list, department)
-    count = 0
-    for i in range(len(ordered)):
-        skill = ordered[i].skill_for(department)
-        if skill < 5 or skill > 7:
-            count += 1  # Count but do nothing yet
-    while count != 0:
-        for i in range(len(ordered)):
-            skill = ordered[i].skill_for(department)
-            if skill < 5 or skill > 7:  # Skill between 5 and 7
-                ordered.pop(i)
-                count -= 1
-                break
-    return ordered
+    return [w for w in ordered if 5 <= w.skill_for(department) <= 7]
 
 
 def sort_by_work_time(worker_list: List[WorkerProtocol]) -> List[WorkerProtocol]:
