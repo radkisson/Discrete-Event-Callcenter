@@ -12,10 +12,10 @@ class DummyMatrix:
 
 sys.modules['data'] = types.SimpleNamespace(
     team_size=[],
-    A=DummyMatrix(),
-    B=DummyMatrix(),
-    C=DummyMatrix(),
-    tSLA=[],
+    skill_matrix_a=DummyMatrix(),
+    skill_matrix_b=DummyMatrix(),
+    skill_matrix_c=DummyMatrix(),
+    sla_targets=[],
     call_input_list=[],
 )
 

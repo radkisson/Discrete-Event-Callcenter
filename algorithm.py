@@ -31,10 +31,7 @@ def _service_level(calls: Sequence, *, threshold: int = 5) -> float:
         Fraction of calls answered before ``threshold`` minutes.
     """
 
-    count = 0
-    for c in calls:
-        if c.wait_time() < threshold:
-            count += 1
+    count = sum(1 for call_obj in calls if call_obj.wait_time() < threshold)
     return count / len(calls) if calls else 0.0
 
 def _sla_compliance(calls: Sequence, sla: Sequence[float]) -> float:
@@ -53,11 +50,12 @@ def _sla_compliance(calls: Sequence, sla: Sequence[float]) -> float:
         Ratio of calls completed before exceeding their SLA.
     """
 
-    count = 0
-    for c in calls:
-        j = int(c.department)
-        if c.handle_time + c.duration - c.time < sla[j]:
-            count += 1
+    count = sum(
+        1
+        for call_obj in calls
+        if call_obj.handle_time + call_obj.duration - call_obj.time
+        < sla[int(call_obj.department)]
+    )
     return count / len(calls) if calls else 0.0
 
 
@@ -76,10 +74,7 @@ def _queue_fraction(calls: Sequence) -> float:
         Proportion of calls with non-zero waiting time.
     """
 
-    count = 0
-    for c in calls:
-        if c.wait_time() > 0:
-            count += 1
+    count = sum(1 for call_obj in calls if call_obj.wait_time() > 0)
     return count / len(calls) if calls else 0.0
 
 
@@ -97,9 +92,7 @@ def _average_utilisation(agents: Sequence) -> float:
         Ratio of minutes spent on calls relative to an 8 hour shift.
     """
 
-    total_work = 0
-    for a in agents:
-        total_work += a.work_time()
+    total_work = sum(agent.work_time() for agent in agents)
     return total_work / (len(agents) * 8 * 60) if agents else 0.0
 
 
@@ -150,7 +143,7 @@ def run_simulation(
         if agents is None:
             agents = worker_mod.agents
         if sla is None:
-            sla = data_mod.tSLA
+            sla = data_mod.sla_targets
 
     # Convert to lists for multiple iterations and because filter helpers expect
     # list objects.
@@ -231,7 +224,7 @@ def run_simulation_detailed(
         if agents is None:
             agents = worker_mod.agents
         if sla is None:
-            sla = data_mod.tSLA
+            sla = data_mod.sla_targets
 
     calls = list(calls)
     agents = list(agents)
