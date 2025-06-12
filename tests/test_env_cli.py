@@ -13,9 +13,9 @@ def test_build_agent_list_respects_env(monkeypatch):
     dummy = types.SimpleNamespace(
         tSLA=[0, 0, 0, 0],
         team_size=[],
-        A=None,
-        B=None,
-        C=None,
+        SKILL_MATRIX_BASE=None,
+        SKILL_MATRIX_PRIMARY_ONLY=None,
+        SKILL_MATRIX_ALTERNATIVE=None,
         call_input_list=[],
     )
     monkeypatch.setitem(sys.modules, 'data', dummy)
@@ -37,9 +37,9 @@ def test_build_agent_list_respects_quality(monkeypatch):
     dummy = types.SimpleNamespace(
         tSLA=[0, 0, 0, 0],
         team_size=[],
-        A=None,
-        B=None,
-        C=None,
+        SKILL_MATRIX_BASE=None,
+        SKILL_MATRIX_PRIMARY_ONLY=None,
+        SKILL_MATRIX_ALTERNATIVE=None,
         call_input_list=[],
     )
     monkeypatch.setitem(sys.modules, 'data', dummy)

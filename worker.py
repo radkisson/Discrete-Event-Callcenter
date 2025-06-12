@@ -2,7 +2,12 @@
 
 import itertools  # Helper for constructing the worker matrices
 
-from data import A, B, C, tSLA
+from data import (
+    SKILL_MATRIX_BASE,
+    SKILL_MATRIX_PRIMARY_ONLY,
+    SKILL_MATRIX_ALTERNATIVE,
+    tSLA,
+)
 from department import Department
 import config
 
@@ -150,9 +155,15 @@ def build_agent_list(skill_matrix, team_size, quality_levels=None, helper_skill=
 # Agent matrices used during the simulation.  When tests monkeypatch ``data``
 # these may fail to build, so fall back to empty lists in that case.
 try:
-    agents = build_agent_list(A, config.TEAM_SIZE, config.QUALITY)
-    agents2 = build_agent_list(B, config.TEAM_SIZE, config.QUALITY)
-    agents3 = build_agent_list(C, config.TEAM_SIZE, config.QUALITY)
+    agents = build_agent_list(
+        SKILL_MATRIX_BASE, config.TEAM_SIZE, config.QUALITY
+    )
+    agents2 = build_agent_list(
+        SKILL_MATRIX_PRIMARY_ONLY, config.TEAM_SIZE, config.QUALITY
+    )
+    agents3 = build_agent_list(
+        SKILL_MATRIX_ALTERNATIVE, config.TEAM_SIZE, config.QUALITY
+    )
 except Exception:
     agents = []
     agents2 = []

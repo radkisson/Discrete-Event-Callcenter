@@ -5,7 +5,8 @@ This module constructs the synthetic call-arrival and worker-skill data used
 throughout the project.  NumPy is employed to draw samples from exponential
 distributions so that each run produces a slightly different workload.  The
 output consists of a matrix of incoming calls (:data:`call_input_list`) as well
-as several worker skill matrices (:data:`A`, :data:`B`, :data:`C`).  These
+as several worker skill matrices (:data:`SKILL_MATRIX_BASE`,
+:data:`SKILL_MATRIX_PRIMARY_ONLY`, :data:`SKILL_MATRIX_ALTERNATIVE`).  These
 variables are imported by :mod:`call` and :mod:`worker` when building their
 respective objects.  Constants defined here are treated as the default inputs
 for the simulation engine.
@@ -14,56 +15,6 @@ for the simulation engine.
 import numpy as np
 import numpy.random as rnd  # used to generate random numbers
 import helpers
-
-# Example matrices of worker skills
-
-# k1 = [8, 6, 2, 1]
-# k2 = [8, 2, 6, 2]
-# k3 = [8, 2, 1, 1]
-# k4 = [8, 2, 1, 1]
-# k5 = [8, 1, 2, 2]
-# l1 = [2, 8, 2, 6]
-# l2 = [6, 8, 1, 2]
-# l3 = [1, 8, 1, 1]
-# I1 = [6, 1, 8, 2]
-# I2 = [1, 2, 8, 6]
-# I3 = [2, 2, 8, 1]
-# I4 = [1, 2, 8, 1]
-# m1 = [2, 2, 6, 8]
-# m2 = [2, 6, 2, 8]
-# m3 = [1, 2, 2, 8]
-
-# k11 = [8, 2, 2, 1]
-# k21 = [8, 2, 1, 2]
-# k31 = [8, 2, 1, 1]
-# k41 = [8, 2, 1, 1]
-# k51 = [8, 1, 2, 2]
-# l11 = [2, 8, 2, 2]
-# l21 = [1, 8, 1, 2]
-# l31 = [1, 8, 1, 1]
-# I11 = [1, 1, 8, 2]
-# I21 = [1, 2, 8, 1]
-# I31 = [2, 2, 8, 1]
-# I41 = [1, 2, 8, 1]
-# m11 = [2, 2, 1, 8]
-# m21 = [2, 1, 2, 8]
-# m31 = [1, 2, 2, 8]
-
-# k12 = [8, 2, 6, 1]
-# k22 = [8, 3, 1, 6]
-# k32 = [8, 6, 1, 1]
-# k42 = [8, 2, 1, 1]
-# k52 = [8, 1, 2, 2]
-# l12 = [2, 8, 2, 6]
-# l22 = [5, 8, 1, 2]
-# l32 = [1, 8, 6, 1]
-# I12 = [1, 6, 8, 2]
-# I22 = [6, 2, 8, 1]
-# I32 = [2, 2, 8, 6]
-# I42 = [1, 2, 8, 1]
-# m12 = [2, 2, 6, 8]
-# m22 = [5, 1, 2, 8]
-# m32 = [1, 6, 2, 8]
 
 
 team_size = np.array([5, 3, 4, 3])  # Number of workers per department
@@ -74,9 +25,68 @@ max_calls = [200, 180, 270, 110]  # Maximum calls per department
 tSLA = np.array([18.0, 12.0, 10.0, 25.0])  # SLA target per department
 incoming_calls = np.array([180, 160, 250, 95])  # Incoming calls per department
 
-A = np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
-B = np.hstack([np.array([1,0,1,0,1,0,1,0,1,0,2,0,2,0,2,0,3,0,3,0,3,0,3,0,4,0,4,0,4,0]).reshape(15,2),np.zeros([15,2])])
-C =  np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
+SKILL_MATRIX_BASE = np.hstack([
+    np.array([
+        1, 2,
+        1, 3,
+        1, 0,
+        1, 0,
+        1, 0,
+        2, 4,
+        2, 1,
+        2, 0,
+        3, 1,
+        3, 4,
+        3, 0,
+        3, 0,
+        4, 3,
+        4, 2,
+        4, 0,
+    ]).reshape(15, 2),
+    np.zeros([15, 2]),
+])
+
+SKILL_MATRIX_PRIMARY_ONLY = np.hstack([
+    np.array([
+        1, 0,
+        1, 0,
+        1, 0,
+        1, 0,
+        1, 0,
+        2, 0,
+        2, 0,
+        2, 0,
+        3, 0,
+        3, 0,
+        3, 0,
+        3, 0,
+        4, 0,
+        4, 0,
+        4, 0,
+    ]).reshape(15, 2),
+    np.zeros([15, 2]),
+])
+
+SKILL_MATRIX_ALTERNATIVE = np.hstack([
+    np.array([
+        1, 2,
+        1, 3,
+        1, 0,
+        1, 0,
+        1, 0,
+        2, 4,
+        2, 1,
+        2, 0,
+        3, 1,
+        3, 4,
+        3, 0,
+        3, 0,
+        4, 3,
+        4, 2,
+        4, 0,
+    ]).reshape(15, 2),
+    np.zeros([15, 2]),
+])
 
 total_workers = team_size.sum()  # Total number of workers
 work_minutes_department = total_minutes * team_size  # Work minutes per department
