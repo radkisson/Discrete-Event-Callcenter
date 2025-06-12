@@ -1,16 +1,39 @@
 # Discrete-Callcenter
 
+This project lives in the repository `Discrete-Event-Callcenter`.  The name
+reflects that a discrete-event approach is used to model call centre
+operations.
+
 This repository presents a small-scale discrete-event simulation of a multi-department call centre. The implementation relies only on the Python standard library and NumPy so that the scheduling mechanics remain explicit and easy to follow.
 
 ## Queueing Model
 
-For each department, incoming calls follow a Poisson arrival process and the handling time of every call is drawn from an exponential distribution. This configuration corresponds to the well-studied $M/M/c$ queue with a finite team of agents. A Service Level Agreement (SLA) specifies the maximum waiting time permitted before service. The simulator records waiting times and utilisation so that the impact of different load scenarios can be evaluated.
+For each department, incoming calls follow a Poisson arrival process and the handling time of every call is drawn from an exponential distribution. Inter-arrival times are sampled from ``numpy.random.exponential`` using a rate parameter ``incoming_calls / total_minutes`` per department.  Durations come from another exponential distribution whose mean ``average_call_time`` reflects the expected workload.  The setup corresponds to the well-studied $M/M/c$ queue with a finite team of agents. A Service Level Agreement (SLA) specifies the maximum waiting time permitted before service. The simulator records waiting times and utilisation so that the impact of different load scenarios can be evaluated.
 
 ## Simulation Details
 
 The incoming call stream is produced in `data.py` by drawing inter-arrival times from `numpy.random.exponential`, yielding a separate Poisson process for each department. Call durations are sampled from another exponential distribution whose mean reflects the expected workload. These samples become `Call` objects sorted by arrival time.
 
-`worker.py` creates `Agent` objects from predefined skill matrices. Specialists carry a skill level of 8 while helpers range from 5 to 7. The event loop in `algorithm.run_simulation` iterates over the calls, first looking for an idle specialist in the appropriate department and then falling back to helpers. If no agent is available the call waits in queue until the next agent finishes.
+`worker.py` creates `Agent` objects from predefined *skill matrices*.  Each row
+of a matrix describes the primary and, optionally, secondary department for a
+worker.  The first column assigns the main department while the second column
+indicates where the agent can help when no specialist is free.  During
+construction `build_agent_list` sets the skill level of the primary department
+to the quality specified in `config.QUALITY` (``8`` by default) and grants a
+helper skill of ``5`` in the secondary one.  The remaining columns are kept as
+placeholders so the matrices retain a consistent shape.  Three matrices (`A`,
+`B` and `C`) ship with the repository, representing different cross-training
+scenarios. The `algorithm.run_simulation` function is responsible for
+scheduling calls using these agents and computing metrics.
+
+## Event Loop
+
+Calls are processed in chronological order.  For each incoming call the simulator checks whether a specialist of the corresponding department is idle. If none are available it tries helpers instead.  When every agent is busy the call waits in queue until the next worker finishes.  Each worker maintains a schedule of assigned calls so that waiting times and utilisation can be derived after the simulation completes.
+
+This dynamic couples the four departments together. Idle agents with secondary
+skills are temporarily reassigned to overloaded queues, helping to balance the
+workload across the centre.  The degree of coupling is dictated by the skill
+matrices described below.
 
 ## Skill Model
 
@@ -22,6 +45,31 @@ function `algorithm.run_simulation_detailed` returns the average waiting time fo
 calls handled by specialists and helpers separately.
 
 Throughout the run the simulator records waiting times, utilisation and SLA compliance. Functions in `stats.py` average these results across multiple iterations.
+
+### Skill Matrices
+
+The arrays `A`, `B` and `C` in `data.py` specify how workers are trained across
+departments.  Each row represents one agent: the first column stores their main
+department and the second column optionally lists another area where they can
+assist.  The matrices differ in how strongly departments are coupled—`B`
+contains only specialists while `A` and `C` include several cross-trained
+helpers.  By editing these matrices you can explore different staffing
+strategies.
+
+## Recorded Metrics
+
+Seven key metrics are produced by each simulation run:
+
+* **professionals** – number of calls handled by department specialists
+* **helpers** – number of calls handled by cross-department helpers
+* **waiting** – count of calls that had to queue before service
+* **service level** – share of calls answered within five minutes (configurable)
+* **SLA compliance** – proportion of calls solved before their department SLA expires
+* **queue share** – fraction of all calls that waited at least once
+* **average utilisation** – minutes spent on calls divided by total shift minutes
+
+`algorithm.run_simulation_detailed` additionally reports the average waiting
+times for calls served by specialists versus helpers.
 
 ## Repository Layout
 
