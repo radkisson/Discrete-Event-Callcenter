@@ -5,7 +5,8 @@ This module constructs the synthetic call-arrival and worker-skill data used
 throughout the project.  NumPy is employed to draw samples from exponential
 distributions so that each run produces a slightly different workload.  The
 output consists of a matrix of incoming calls (:data:`call_input_list`) as well
-as several worker skill matrices (:data:`A`, :data:`B`, :data:`C`).  These
+as several worker skill matrices (:data:`skill_matrix_a`, :data:`skill_matrix_b`,
+:data:`skill_matrix_c`).  These
 variables are imported by :mod:`call` and :mod:`worker` when building their
 respective objects.  Constants defined here are treated as the default inputs
 for the simulation engine.
@@ -71,12 +72,126 @@ work_hours = 8  # Working hours per day
 total_minutes = work_hours * 60  # Total work time in minutes
 department_ratio = np.array([.35, .18, .25, .22])  # Department workload proportions
 max_calls = [200, 180, 270, 110]  # Maximum calls per department
-tSLA = np.array([18.0, 12.0, 10.0, 25.0])  # SLA target per department
+sla_targets = np.array([18.0, 12.0, 10.0, 25.0])  # SLA target per department
 incoming_calls = np.array([180, 160, 250, 95])  # Incoming calls per department
 
-A = np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
-B = np.hstack([np.array([1,0,1,0,1,0,1,0,1,0,2,0,2,0,2,0,3,0,3,0,3,0,3,0,4,0,4,0,4,0]).reshape(15,2),np.zeros([15,2])])
-C =  np.hstack([np.array([1,2,1,3,1,0,1,0,1,0,2,4,2,1,2,0,3,1,3,4,3,0,3,0,4,3,4,2,4,0]).reshape(15,2),np.zeros([15,2])])
+skill_matrix_a = np.hstack(
+    [
+        np.array([
+            1,
+            2,
+            1,
+            3,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            2,
+            4,
+            2,
+            1,
+            2,
+            0,
+            3,
+            1,
+            3,
+            4,
+            3,
+            0,
+            3,
+            0,
+            4,
+            3,
+            4,
+            2,
+            4,
+            0,
+        ]).reshape(15, 2),
+        np.zeros([15, 2]),
+    ]
+)
+skill_matrix_b = np.hstack(
+    [
+        np.array([
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            2,
+            0,
+            2,
+            0,
+            2,
+            0,
+            3,
+            0,
+            3,
+            0,
+            3,
+            0,
+            3,
+            0,
+            4,
+            0,
+            4,
+            0,
+            4,
+            0,
+        ]).reshape(15, 2),
+        np.zeros([15, 2]),
+    ]
+)
+skill_matrix_c = np.hstack(
+    [
+        np.array([
+            1,
+            2,
+            1,
+            3,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            2,
+            4,
+            2,
+            1,
+            2,
+            0,
+            3,
+            1,
+            3,
+            4,
+            3,
+            0,
+            3,
+            0,
+            4,
+            3,
+            4,
+            2,
+            4,
+            0,
+        ]).reshape(15, 2),
+        np.zeros([15, 2]),
+    ]
+)
+
+# Backwards compatibility for older imports
+A = skill_matrix_a
+B = skill_matrix_b
+C = skill_matrix_c
+tSLA = sla_targets
 
 total_workers = team_size.sum()  # Total number of workers
 work_minutes_department = total_minutes * team_size  # Work minutes per department
@@ -105,7 +220,15 @@ call_durations_cum = np.array([
 all_calls = np.array(
     [
         np.array(
-            [np.array([arrival_times[i][j], call_durations[i][j], i, tSLA[i]]) for j in range(incoming_calls[i])]
+            [
+                np.array([
+                    arrival_times[i][j],
+                    call_durations[i][j],
+                    i,
+                    sla_targets[i],
+                ])
+                for j in range(incoming_calls[i])
+            ]
         )
         for i in range(4)
     ],

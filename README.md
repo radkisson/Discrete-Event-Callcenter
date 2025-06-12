@@ -31,7 +31,7 @@ Throughout the run the simulator records waiting times, utilisation and SLA comp
 * `filter.py` provides helper functions for assigning calls to suitable agents.
 * `stats.py` aggregates raw results into average metrics.
 
-Variable names originate from an earlier prototype that used Euskera terms. They have been kept for compatibility, but comments now explain their purpose in English.
+Earlier versions used very short names (``A``, ``B``, ``C``, ``tSLA``) for the skill matrices and SLA thresholds. These have been renamed to ``skill_matrix_a``, ``skill_matrix_b``, ``skill_matrix_c`` and ``sla_targets`` for clarity. The old identifiers remain available as aliases so existing code continues to run.
 
 ## Requirements
 

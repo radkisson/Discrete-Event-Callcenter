@@ -39,7 +39,7 @@ def _load_agents_from_env(env_file: str):
     from worker import build_agent_list
     import data
 
-    return build_agent_list(data.A, team_size, quality)
+    return build_agent_list(data.skill_matrix_a, team_size, quality)
 
 
 def _write_results(runs: int, agents=None, filename: str = "results.txt") -> None:

@@ -11,11 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_build_agent_list_respects_env(monkeypatch):
     dummy = types.SimpleNamespace(
-        tSLA=[0, 0, 0, 0],
+        sla_targets=[0, 0, 0, 0],
         team_size=[],
-        A=None,
-        B=None,
-        C=None,
+        skill_matrix_a=None,
+        skill_matrix_b=None,
+        skill_matrix_c=None,
         call_input_list=[],
     )
     monkeypatch.setitem(sys.modules, 'data', dummy)
@@ -35,11 +35,11 @@ def test_build_agent_list_respects_env(monkeypatch):
 
 def test_build_agent_list_respects_quality(monkeypatch):
     dummy = types.SimpleNamespace(
-        tSLA=[0, 0, 0, 0],
+        sla_targets=[0, 0, 0, 0],
         team_size=[],
-        A=None,
-        B=None,
-        C=None,
+        skill_matrix_a=None,
+        skill_matrix_b=None,
+        skill_matrix_c=None,
         call_input_list=[],
     )
     monkeypatch.setitem(sys.modules, 'data', dummy)
