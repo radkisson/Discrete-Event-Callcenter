@@ -170,3 +170,13 @@ Run the unit tests with:
 PYTHONPATH=. pytest -q
 ```
 
+## Branch Management
+
+This repository uses a simplified branch structure with only the `main` branch for active development. To clean up old feature branches and maintain a clean repository:
+
+1. **View cleanup documentation**: See [BRANCH_CLEANUP.md](./BRANCH_CLEANUP.md) for detailed information about branch cleanup
+2. **Automated cleanup**: Run `./cleanup-branches.sh` to delete all branches except main
+3. **Dry run**: Run `./dry-run-cleanup.sh` to preview what branches would be deleted
+
+The cleanup process will remove all AI-generated feature branches (codex/*, copilot/*, etc.) while preserving the main development branch.
+
