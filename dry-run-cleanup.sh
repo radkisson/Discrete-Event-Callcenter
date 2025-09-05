@@ -13,7 +13,7 @@ BRANCHES_TO_DELETE=$(git ls-remote --heads origin | grep -v refs/heads/main | aw
 echo "The following branches WOULD be deleted:"
 echo "$BRANCHES_TO_DELETE"
 echo ""
-echo "Total branches to delete: $(echo "$BRANCHES_TO_DELETE" | wc -l)"
+echo "Total branches to delete: $(printf '%s\n' "$BRANCHES_TO_DELETE" | grep -c .)"
 echo ""
 echo "Current branches:"
 git ls-remote --heads origin
