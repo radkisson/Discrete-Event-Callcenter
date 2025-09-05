@@ -34,15 +34,19 @@ echo ""
 echo "Press Enter to continue or Ctrl+C to cancel..."
 read -r
 
-echo "Deleting branches..."
-for branch in $BRANCHES_TO_DELETE; do
-    echo "Deleting branch: $branch"
-    if git push origin --delete "$branch"; then
-        echo "✓ Successfully deleted: $branch"
-    else
-        echo "✗ Failed to delete: $branch"
-    fi
-done
+if [ -n "$BRANCHES_TO_DELETE" ]; then
+    echo "Deleting branches..."
+    for branch in $BRANCHES_TO_DELETE; do
+        echo "Deleting branch: $branch"
+        if git push origin --delete "$branch"; then
+            echo "✓ Successfully deleted: $branch"
+        else
+            echo "✗ Failed to delete: $branch"
+        fi
+    done
+else
+    echo "No branches to delete."
+fi
 
 echo ""
 echo "Branch cleanup completed!"
